@@ -1,686 +1,603 @@
-<h2 class="sr-only">Cena ilustrada interativa: festa de paredão num bairro periférico de Salvador à noite. Toque em pessoas e paredões para abrir suas histórias. Toque num paredão duas vezes para entrar dentro dele.</h2>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cidade traduzida em som</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-.pp { max-width: 680px; margin: 0 auto; font-family: var(--font-sans); color: var(--color-text-primary); padding: 0; }
-.pp-stage { position: relative; line-height: 0; border-radius: var(--border-radius-lg); overflow: hidden; }
-.pp-stage svg { display: block; width: 100%; height: auto; }
-.pp .hot { cursor: pointer; pointer-events: none; }
-.pp .ring { opacity: 0; transition: opacity 0.18s; }
-.pp .hot:hover .ring { opacity: 0.9; }
-.pp .mode-overview .in-overview, .pp .mode-p1 .in-p1, .pp .mode-p2 .in-p2, .pp .mode-p3 .in-p3 { pointer-events: auto; }
-.pp-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; margin-top: 10px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); }
-.pp-bar .st { font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.14em; color: var(--color-text-secondary); text-transform: uppercase; }
-.pp-back { font-size: 13px; font-family: var(--font-sans); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); padding: 5px 12px; border-radius: var(--border-radius-md); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
-.pp-back.show { opacity: 1; pointer-events: auto; }
-.pp-back:hover { background: var(--color-background-primary); }
-.pp-card { padding: 16px 18px; background: var(--color-background-secondary); border-radius: var(--border-radius-lg); margin-top: 8px; min-height: 92px; }
-.pp-card .tag { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 5px; }
-.pp-card .ttl { font-size: 17px; font-weight: 500; margin-bottom: 6px; line-height: 1.3; color: var(--color-text-primary); }
-.pp-card p { font-size: 14px; line-height: 1.55; margin: 0; color: var(--color-text-secondary); font-family: var(--font-sans); }
-.pp-hint { font-size: 11px; color: var(--color-text-tertiary); padding: 8px 14px 0; text-align: center; letter-spacing: 0.06em; font-family: var(--font-mono); }
-@keyframes ppwave { 0% { r: 8; opacity: 0.85; } 100% { r: 90; opacity: 0; } }
-.pp-w1 { animation: ppwave 2.4s ease-out infinite; transform-origin: center; }
-.pp-w2 { animation: ppwave 2.4s ease-out infinite; animation-delay: 0.8s; }
-.pp-w3 { animation: ppwave 2.4s ease-out infinite; animation-delay: 1.6s; }
-@keyframes ppdance { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-1.5px); } }
-@keyframes ppdance2 { 0%, 100% { transform: rotate(5deg) translateY(-1px); } 50% { transform: rotate(-3deg) translateY(0); } }
-@keyframes ppdance3 { 0%, 100% { transform: rotate(0deg) translateY(0); } 50% { transform: rotate(0deg) translateY(-2px); } }
-.pp-d1 { animation: ppdance 1.2s ease-in-out infinite; transform-origin: center bottom; transform-box: fill-box; }
-.pp-d2 { animation: ppdance2 1.5s ease-in-out infinite; transform-origin: center bottom; transform-box: fill-box; }
-.pp-d3 { animation: ppdance3 0.9s ease-in-out infinite; transform-origin: center bottom; transform-box: fill-box; }
-.pp-d4 { animation: ppdance 1.4s ease-in-out infinite; transform-origin: center bottom; transform-box: fill-box; }
-@keyframes pptwinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
-.pp-twk { animation: pptwinkle 3s ease-in-out infinite; }
-.pp-twk2 { animation: pptwinkle 2.2s ease-in-out infinite; animation-delay: 0.6s; }
-@keyframes ppshake { 0%, 100% { transform: scaleY(1) scaleX(1); } 50% { transform: scaleY(0.96) scaleX(1.02); } }
-.pp-shk { animation: ppshake 0.45s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
-@keyframes ppblink { 0%, 60%, 100% { fill-opacity: 1; } 70%, 90% { fill-opacity: 0.3; } }
-.pp-blink { animation: ppblink 1.8s ease-in-out infinite; }
+
+:root {
+  --bg: #090b12;
+  --bg-soft: rgba(16,18,28,.82);
+  --card: rgba(18,20,32,.74);
+  --stroke: rgba(255,255,255,.06);
+  --text: #f3f1ec;
+  --text-soft: #b5b8c7;
+  --text-dim: #6f7385;
+  --yellow: #f4c430;
+  --pink: #e8528e;
+  --red: #d83b2f;
+  --blue: #2d4a8a;
+  --green: #3a8a6c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(122,92,255,.10), transparent 35%),
+    radial-gradient(circle at bottom, rgba(255,122,0,.08), transparent 40%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, sans-serif;
+  min-height: 100vh;
+}
+
+main {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 42px 0 60px;
+}
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.kicker {
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 10px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 5rem);
+  line-height: .95;
+  letter-spacing: -.05em;
+  max-width: 850px;
+}
+
+.subtitle {
+  max-width: 700px;
+  margin-top: 18px;
+  color: var(--text-soft);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.2fr 360px;
+  gap: 18px;
+}
+
+.stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(180deg,#151826 0%, #0c0f17 100%);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255,122,0,.06), transparent 35%),
+    radial-gradient(circle at 30% 40%, rgba(122,92,255,.09), transparent 28%);
+  pointer-events: none;
+}
+
+svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 24px;
+  padding: 22px;
+  backdrop-filter: blur(14px);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status span {
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-family: "JetBrains Mono", monospace;
+}
+
+button {
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.02);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: .25s ease;
+}
+
+button:hover {
+  background: rgba(255,255,255,.06);
+}
+
+button.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--yellow);
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  margin-bottom: 14px;
+}
+
+.card-text {
+  color: var(--text-soft);
+  line-height: 1.75;
+  font-size: 15px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.hot {
+  cursor: pointer;
+}
+
+.ring {
+  opacity: .45;
+  stroke-dasharray: 5 10;
+  animation: pulseRing 6s linear infinite;
+}
+
+@keyframes pulseRing {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -80;
+  }
+}
+
+.person-shadow {
+  fill: rgba(0,0,0,.28);
+}
+
+.mode-p1 .overview-layer,
+.mode-p2 .overview-layer,
+.mode-p3 .overview-layer {
+  opacity: .16;
+  filter: blur(3px);
+  transition: .4s ease;
+}
+
+.mode-p1 .focus-p1,
+.mode-p2 .focus-p2,
+.mode-p3 .focus-p3 {
+  filter: drop-shadow(0 0 22px rgba(244,196,48,.35));
+}
+
+@keyframes bass {
+  0%,100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.01);
+  }
+}
+
+.sound {
+  animation: bass 2.2s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes dance {
+  0%,100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+
+  50% {
+    transform: translateY(-2px) rotate(2deg);
+  }
+}
+
+.dance {
+  animation: dance 1.2s ease-in-out infinite;
+  transform-origin: center bottom;
+  transform-box: fill-box;
+}
+
+.city-glow {
+  mix-blend-mode: screen;
+}
+
+@media (max-width: 980px) {
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .side {
+    order: -1;
+  }
+
+}
+
 </style>
+</head>
+<body>
 
-<div class="pp">
+<main>
 
-<div class="pp-stage">
-<svg id="pp-svg" class="mode-overview" viewBox="0 0 680 540" role="img" aria-labelledby="ppt ppd" preserveAspectRatio="xMidYMid slice">
-<title id="ppt">Cena noturna de bairro de Salvador com três paredões em festa</title>
-<desc id="ppd">Cena ilustrada noturna mostrando um bairro periférico de Salvador com casas em cores chapadas, três paredões diferentes tocando ao mesmo tempo, pessoas dançando, um vendedor de acarajé, e um carro de polícia observando ao longe. Cada elemento pode ser tocado para abrir uma história.</desc>
+<section class="hero">
+  <div class="kicker">ensaio visual interativo</div>
+  <h1>cidade traduzida em som</h1>
+  <div class="subtitle">
+    Uma rua de Salvador, três paredões e dezenas de vidas orbitando em volta do grave. Explore a cena tocando nos personagens e nos sistemas de som.
+  </div>
+</section>
 
-<rect x="0" y="0" width="680" height="540" fill="#1a1d2a"/>
+<section class="layout">
+
+<div class="stage">
+
+<svg id="scene" class="mode-overview" viewBox="0 0 680 540">
+
+<defs>
+  <linearGradient id="fog" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="0%" stop-color="#6a4ca3" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#0d1018" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+
+<rect width="680" height="540" fill="#131724"/>
+
+<ellipse cx="340" cy="170" rx="320" ry="120" fill="#ff7a00" opacity="0.04" class="city-glow"/>
+<ellipse cx="320" cy="120" rx="280" ry="100" fill="#7a5cff" opacity="0.06" class="city-glow"/>
+
+<rect x="0" y="0" width="680" height="260" fill="url(#fog)"/>
 
 <circle cx="580" cy="62" r="26" fill="#f4c430"/>
-<circle cx="568" cy="55" r="20" fill="#1a1d2a"/>
-<g fill="#f5ede0">
-<circle cx="38" cy="35" r="1.3" class="pp-twk"/>
-<circle cx="98" cy="22" r="1"/>
-<circle cx="165" cy="48" r="1.4" class="pp-twk2"/>
-<circle cx="232" cy="28" r="1"/>
-<circle cx="298" cy="55" r="1.2"/>
-<circle cx="372" cy="18" r="1.1" class="pp-twk"/>
-<circle cx="445" cy="42" r="1.3" class="pp-twk2"/>
-<circle cx="508" cy="22" r="1"/>
-<circle cx="638" cy="98" r="1.4" class="pp-twk"/>
-<circle cx="540" cy="108" r="1"/>
-<circle cx="18" cy="88" r="1.2"/>
-<circle cx="660" cy="38" r="1.1" class="pp-twk2"/>
-<circle cx="265" cy="105" r="1"/>
-<circle cx="138" cy="115" r="1.2" class="pp-twk"/>
+<circle cx="568" cy="55" r="20" fill="#131724"/>
+
+<g fill="#f5ede0" opacity=".8">
+  <circle cx="38" cy="35" r="1.3"/>
+  <circle cx="98" cy="22" r="1"/>
+  <circle cx="165" cy="48" r="1.4"/>
+  <circle cx="232" cy="28" r="1"/>
+  <circle cx="298" cy="55" r="1.2"/>
+  <circle cx="372" cy="18" r="1.1"/>
+  <circle cx="445" cy="42" r="1.3"/>
 </g>
 
-<rect x="0" y="195" width="680" height="345" fill="#23263a"/>
+<rect x="0" y="195" width="680" height="345" fill="#1b1f2e"/>
+
+<g class="overview-layer">
 
 <g fill="#2a2e44">
-<polygon points="0,195 28,170 56,195"/>
-<rect x="0" y="170" width="28" height="25"/>
-<polygon points="28,195 56,160 84,195"/>
-<rect x="28" y="160" width="28" height="35"/>
-<rect x="84" y="178" width="44" height="17"/>
-<polygon points="84,178 106,158 128,178"/>
-<rect x="128" y="170" width="40" height="25"/>
-<rect x="168" y="165" width="35" height="30"/>
-<polygon points="168,165 185,148 203,165"/>
-<rect x="203" y="178" width="38" height="17"/>
-<rect x="241" y="170" width="42" height="25"/>
-<polygon points="241,170 262,150 283,170"/>
-<rect x="283" y="180" width="38" height="15"/>
-<rect x="321" y="172" width="42" height="23"/>
-<polygon points="321,172 342,152 363,172"/>
-<rect x="363" y="165" width="38" height="30"/>
-<rect x="401" y="178" width="42" height="17"/>
-<polygon points="401,178 422,158 443,178"/>
-<rect x="443" y="170" width="38" height="25"/>
-<rect x="481" y="165" width="35" height="30"/>
-<polygon points="481,165 498,148 516,165"/>
-<rect x="516" y="172" width="42" height="23"/>
-<rect x="558" y="178" width="38" height="17"/>
-<rect x="596" y="170" width="44" height="25"/>
-<polygon points="596,170 618,152 640,170"/>
-<rect x="640" y="178" width="40" height="17"/>
-</g>
-<g fill="#f4c430" opacity="0.65">
-<rect x="8" y="180" width="2" height="3" class="pp-twk"/>
-<rect x="40" y="178" width="2" height="3"/>
-<rect x="92" y="184" width="2" height="3"/>
-<rect x="142" y="180" width="2" height="3" class="pp-twk2"/>
-<rect x="180" y="175" width="2" height="3"/>
-<rect x="218" y="184" width="2" height="3"/>
-<rect x="255" y="180" width="2" height="3"/>
-<rect x="298" y="184" width="2" height="3" class="pp-twk"/>
-<rect x="338" y="178" width="2" height="3"/>
-<rect x="382" y="172" width="2" height="3"/>
-<rect x="420" y="184" width="2" height="3"/>
-<rect x="458" y="178" width="2" height="3" class="pp-twk2"/>
-<rect x="498" y="172" width="2" height="3"/>
-<rect x="538" y="180" width="2" height="3"/>
-<rect x="578" y="184" width="2" height="3"/>
-<rect x="618" y="180" width="2" height="3" class="pp-twk"/>
-<rect x="652" y="184" width="2" height="3"/>
+  <rect x="0" y="170" width="680" height="30"/>
 </g>
 
-<g>
-<rect x="0" y="218" width="60" height="60" fill="#3a8a6c"/>
-<polygon points="0,218 30,202 60,218" fill="#2a5a48"/>
-<rect x="8" y="232" width="10" height="12" fill="#1a1d2a"/>
-<rect x="26" y="232" width="10" height="12" fill="#1a1d2a"/>
-<rect x="44" y="232" width="10" height="12" fill="#1a1d2a"/>
-<rect x="14" y="254" width="14" height="24" fill="#1a1d2a"/>
-<rect x="60" y="232" width="55" height="46" fill="#e9a09a"/>
-<polygon points="60,232 87,218 115,232" fill="#a06b66"/>
-<rect x="66" y="244" width="9" height="11" fill="#1a1d2a"/>
-<rect x="82" y="244" width="9" height="11" fill="#1a1d2a"/>
-<rect x="98" y="244" width="9" height="11" fill="#1a1d2a"/>
-<rect x="180" y="216" width="56" height="62" fill="#f4c430"/>
-<polygon points="180,216 208,200 236,216" fill="#a08020"/>
-<rect x="188" y="228" width="9" height="11" fill="#1a1d2a"/>
-<rect x="204" y="228" width="9" height="11" fill="#1a1d2a"/>
-<rect x="220" y="228" width="9" height="11" fill="#1a1d2a"/>
-<rect x="195" y="252" width="14" height="26" fill="#1a1d2a"/>
-<rect x="236" y="225" width="68" height="53" fill="#f5ede0"/>
-<polygon points="236,225 270,208 304,225" fill="#a89a82"/>
-<rect x="244" y="237" width="10" height="12" fill="#1a1d2a"/>
-<rect x="262" y="237" width="10" height="12" fill="#1a1d2a"/>
-<rect x="280" y="237" width="10" height="12" fill="#1a1d2a"/>
-<rect x="252" y="258" width="10" height="20" fill="#1a1d2a"/>
-<rect x="272" y="258" width="10" height="20" fill="#1a1d2a"/>
-<rect x="304" y="220" width="60" height="58" fill="#d83b2f"/>
-<polygon points="304,220 334,204 364,220" fill="#882318"/>
-<rect x="311" y="232" width="10" height="12" fill="#1a1d2a"/>
-<rect x="328" y="232" width="10" height="12" fill="#1a1d2a"/>
-<rect x="346" y="232" width="10" height="12" fill="#1a1d2a"/>
-<rect x="319" y="254" width="16" height="24" fill="#1a1d2a"/>
-<rect x="364" y="222" width="66" height="56" fill="#2d4a8a"/>
-<polygon points="364,222 397,206 430,222" fill="#1a2e58"/>
-<rect x="372" y="234" width="10" height="12" fill="#1a1d2a"/>
-<rect x="390" y="234" width="10" height="12" fill="#1a1d2a"/>
-<rect x="408" y="234" width="10" height="12" fill="#1a1d2a"/>
-<rect x="383" y="256" width="11" height="22" fill="#1a1d2a"/>
-<rect x="600" y="218" width="50" height="60" fill="#3a8a6c"/>
-<polygon points="600,218 625,202 650,218" fill="#2a5a48"/>
-<rect x="608" y="232" width="9" height="11" fill="#1a1d2a"/>
-<rect x="623" y="232" width="9" height="11" fill="#1a1d2a"/>
-<rect x="638" y="232" width="9" height="11" fill="#1a1d2a"/>
-<rect x="617" y="254" width="13" height="24" fill="#1a1d2a"/>
-<rect x="650" y="222" width="30" height="56" fill="#e9a09a"/>
-<rect x="657" y="234" width="9" height="11" fill="#1a1d2a"/>
-<rect x="666" y="256" width="10" height="22" fill="#1a1d2a"/>
+<rect x="0" y="385" width="680" height="155" fill="#090b12"/>
+
+<line x1="0" y1="463" x2="680" y2="463" stroke="#f4c430" stroke-width="2" stroke-dasharray="12 14" opacity="0.3"/>
+
+<ellipse cx="115" cy="410" rx="120" ry="70" fill="#d83b2f" opacity="0.09" class="city-glow"/>
+<ellipse cx="490" cy="400" rx="140" ry="90" fill="#e8528e" opacity="0.09" class="city-glow"/>
+<ellipse cx="290" cy="460" rx="90" ry="55" fill="#2d4a8a" opacity="0.08" class="city-glow"/>
+
+<!-- paredão 1 -->
+<g class="hot sound focus-p1" data-zoom="p1" data-card="p1">
+  <rect x="55" y="285" width="120" height="120" rx="6" fill="#d83b2f"/>
+  <rect x="55" y="285" width="120" height="16" fill="#0f121c"/>
+  <text x="115" y="296" text-anchor="middle" fill="#f4c430" font-size="11" letter-spacing="4">HULK</text>
+
+  <g fill="#0f121c">
+    <circle cx="76" cy="335" r="8"/>
+    <circle cx="115" cy="335" r="8"/>
+    <circle cx="154" cy="335" r="8"/>
+
+    <rect x="63" y="350" width="22" height="22"/>
+    <rect x="89" y="350" width="22" height="22"/>
+    <rect x="115" y="350" width="22" height="22"/>
+    <rect x="141" y="350" width="22" height="22"/>
+  </g>
+
+  <rect x="50" y="280" width="130" height="135" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
 </g>
 
-<g stroke="#0d1018" stroke-width="0.7" fill="none">
-<path d="M 0 215 Q 200 228 400 218 T 680 215"/>
-<path d="M 0 220 Q 200 234 400 224 T 680 220"/>
+<!-- paredão 3 -->
+<g class="hot sound focus-p3" data-zoom="p3" data-card="p3">
+  <rect x="425" y="285" width="130" height="120" rx="6" fill="#e8528e"/>
+  <rect x="425" y="285" width="130" height="16" fill="#0f121c"/>
+  <text x="490" y="296" text-anchor="middle" fill="#f4c430" font-size="10" letter-spacing="3">PAULILO</text>
+
+  <g fill="#0f121c">
+    <circle cx="440" cy="338" r="7"/>
+    <circle cx="468" cy="338" r="7"/>
+    <circle cx="496" cy="338" r="7"/>
+    <circle cx="524" cy="338" r="7"/>
+  </g>
+
+  <rect x="420" y="280" width="140" height="135" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
 </g>
 
-<g>
-<rect x="128" y="195" width="3" height="190" fill="#0d1018"/>
-<circle cx="129" cy="195" r="5" fill="#f4c430" class="pp-twk"/>
-<rect x="406" y="195" width="3" height="175" fill="#0d1018"/>
-<circle cx="407" cy="195" r="5" fill="#f4c430"/>
-<rect x="615" y="195" width="3" height="190" fill="#0d1018"/>
-<circle cx="616" cy="195" r="5" fill="#f4c430" class="pp-twk2"/>
+<!-- som mala -->
+<g class="hot sound focus-p2" data-zoom="p2" data-card="p2">
+  <rect x="220" y="425" width="142" height="32" rx="4" fill="#2d4a8a"/>
+  <polygon points="232,425 250,406 332,406 350,425" fill="#2d4a8a"/>
+
+  <circle cx="324" cy="442" r="13" fill="#0f121c" stroke="#d83b2f" stroke-width="2"/>
+  <circle cx="350" cy="442" r="10" fill="#0f121c" stroke="#f4c430" stroke-width="1.5"/>
+
+  <rect x="215" y="402" width="155" height="68" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
 </g>
 
-<rect x="0" y="385" width="680" height="155" fill="#0d1018"/>
-<g stroke="#f4c430" stroke-width="2" stroke-dasharray="12 14" opacity="0.55">
-<line x1="0" y1="463" x2="680" y2="463"/>
+<!-- personagens -->
+
+<g class="hot dance" data-card="construtor" transform="translate(40 408)">
+  <ellipse class="person-shadow" cx="0" cy="42" rx="10" ry="3"/>
+  <circle cx="0" cy="0" r="7" fill="#8b5a2b"/>
+  <rect x="-6" y="6" width="12" height="18" fill="#3a8a6c"/>
+  <rect x="-3" y="24" width="4" height="12" fill="#0f121c"/>
+  <rect x="1" y="24" width="4" height="12" fill="#0f121c"/>
+  <rect x="-22" y="-16" width="44" height="58" fill="none" stroke="#f4c430" stroke-width="1" class="ring"/>
 </g>
 
-<g opacity="0.7">
-<circle cx="115" cy="345" r="55" fill="none" stroke="#d83b2f" stroke-width="0.6" class="pp-w1"/>
-<circle cx="115" cy="345" r="55" fill="none" stroke="#d83b2f" stroke-width="0.6" class="pp-w2"/>
-<circle cx="290" cy="450" r="40" fill="none" stroke="#f4c430" stroke-width="0.6" class="pp-w1"/>
-<circle cx="490" cy="345" r="55" fill="none" stroke="#e8528e" stroke-width="0.6" class="pp-w2"/>
-<circle cx="490" cy="345" r="55" fill="none" stroke="#e8528e" stroke-width="0.6" class="pp-w3"/>
+<g class="hot dance" data-card="lekinho" transform="translate(195 388)">
+  <ellipse class="person-shadow" cx="0" cy="44" rx="10" ry="3"/>
+  <circle cx="0" cy="0" r="8" fill="#8b5a2b"/>
+  <rect x="-7" y="9" width="14" height="20" fill="#f5ede0"/>
+  <rect x="-3" y="29" width="5" height="14" fill="#2d4a8a"/>
+  <rect x="2" y="29" width="5" height="14" fill="#2d4a8a"/>
+  <rect x="-22" y="-14" width="44" height="60" fill="none" stroke="#f4c430" stroke-width="1" class="ring"/>
 </g>
 
-<g class="hot in-overview" data-zoom="p1" data-card="p1">
-<rect x="55" y="285" width="120" height="120" fill="#d83b2f" stroke="#1a1d2a" stroke-width="1"/>
-<rect x="55" y="285" width="120" height="16" fill="#1a1d2a"/>
-<text x="115" y="296" text-anchor="middle" fill="#f4c430" font-family="var(--font-sans)" font-size="11" font-weight="500" letter-spacing="0.25em" class="pp-blink">hulk</text>
-<g fill="#1a1d2a">
-<circle cx="68" cy="312" r="5"/><circle cx="86" cy="312" r="5"/><circle cx="104" cy="312" r="5"/><circle cx="122" cy="312" r="5"/><circle cx="140" cy="312" r="5"/><circle cx="158" cy="312" r="5"/>
-<circle cx="76" cy="335" r="8"/><circle cx="76" cy="335" r="3" fill="#f4c430"/>
-<circle cx="115" cy="335" r="8"/><circle cx="115" cy="335" r="3" fill="#f4c430"/>
-<circle cx="154" cy="335" r="8"/><circle cx="154" cy="335" r="3" fill="#f4c430"/>
-<rect x="63" y="350" width="22" height="22" class="pp-shk"/><circle cx="74" cy="361" r="6" fill="#2d4a8a"/>
-<rect x="89" y="350" width="22" height="22" class="pp-shk"/><circle cx="100" cy="361" r="6" fill="#2d4a8a"/>
-<rect x="115" y="350" width="22" height="22" class="pp-shk"/><circle cx="126" cy="361" r="6" fill="#2d4a8a"/>
-<rect x="141" y="350" width="22" height="22" class="pp-shk"/><circle cx="152" cy="361" r="6" fill="#2d4a8a"/>
-<rect x="62" y="378" width="48" height="24"/><circle cx="86" cy="390" r="9" fill="#3a3f55"/>
-<rect x="116" y="378" width="48" height="24"/><circle cx="140" cy="390" r="9" fill="#3a3f55"/>
-</g>
-<rect x="45" y="402" width="140" height="14" fill="#1a1d2a"/>
-<circle cx="65" cy="423" r="9" fill="#1a1d2a"/>
-<circle cx="95" cy="423" r="9" fill="#1a1d2a"/>
-<circle cx="135" cy="423" r="9" fill="#1a1d2a"/>
-<circle cx="165" cy="423" r="9" fill="#1a1d2a"/>
-<rect x="50" y="280" width="130" height="135" fill="none" stroke="#f4c430" stroke-width="1.5" class="ring"/>
+<g class="hot dance" data-card="frequentadora" transform="translate(385 488)">
+  <ellipse class="person-shadow" cx="0" cy="44" rx="10" ry="3"/>
+  <circle cx="0" cy="0" r="8" fill="#5a3820"/>
+  <rect x="-7" y="8" width="14" height="14" fill="#d83b2f"/>
+  <rect x="-7" y="22" width="14" height="10" fill="#0f121c"/>
+  <rect x="-4" y="32" width="3" height="12" fill="#5a3820"/>
+  <rect x="1" y="32" width="3" height="12" fill="#5a3820"/>
+  <rect x="-22" y="-14" width="44" height="60" fill="none" stroke="#f4c430" stroke-width="1" class="ring"/>
 </g>
 
-<g class="hot in-overview" data-zoom="p3" data-card="p3">
-<rect x="425" y="285" width="130" height="120" fill="#e8528e" stroke="#1a1d2a" stroke-width="1"/>
-<rect x="425" y="285" width="130" height="16" fill="#1a1d2a"/>
-<text x="490" y="296" text-anchor="middle" fill="#f4c430" font-family="var(--font-sans)" font-size="10" font-weight="500" letter-spacing="0.22em">paulilo</text>
-<g>
-<rect x="431" y="305" width="118" height="3" fill="#d83b2f"/>
-<rect x="431" y="308" width="118" height="3" fill="#f08530"/>
-<rect x="431" y="311" width="118" height="3" fill="#f4c430"/>
-<rect x="431" y="314" width="118" height="3" fill="#3a8a6c"/>
-<rect x="431" y="317" width="118" height="3" fill="#2d4a8a"/>
-<rect x="431" y="320" width="118" height="3" fill="#7a3a8e"/>
-</g>
-<g fill="#1a1d2a">
-<circle cx="440" cy="338" r="7"/><circle cx="440" cy="338" r="3" fill="#e8528e"/>
-<circle cx="468" cy="338" r="7"/><circle cx="468" cy="338" r="3" fill="#e8528e"/>
-<circle cx="496" cy="338" r="7"/><circle cx="496" cy="338" r="3" fill="#e8528e"/>
-<circle cx="524" cy="338" r="7"/><circle cx="524" cy="338" r="3" fill="#e8528e"/>
-<rect x="432" y="352" width="26" height="22" class="pp-shk"/><circle cx="445" cy="363" r="6" fill="#7a3a8e"/>
-<rect x="462" y="352" width="26" height="22" class="pp-shk"/><circle cx="475" cy="363" r="6" fill="#7a3a8e"/>
-<rect x="492" y="352" width="26" height="22" class="pp-shk"/><circle cx="505" cy="363" r="6" fill="#7a3a8e"/>
-<rect x="522" y="352" width="26" height="22" class="pp-shk"/><circle cx="535" cy="363" r="6" fill="#7a3a8e"/>
-<rect x="432" y="378" width="55" height="24"/><circle cx="459" cy="390" r="9" fill="#3a3f55"/>
-<rect x="491" y="378" width="55" height="24"/><circle cx="518" cy="390" r="9" fill="#3a3f55"/>
-</g>
-<rect x="415" y="402" width="150" height="14" fill="#1a1d2a"/>
-<circle cx="435" cy="423" r="9" fill="#1a1d2a"/>
-<circle cx="467" cy="423" r="9" fill="#1a1d2a"/>
-<circle cx="513" cy="423" r="9" fill="#1a1d2a"/>
-<circle cx="545" cy="423" r="9" fill="#1a1d2a"/>
-<rect x="420" y="280" width="140" height="135" fill="none" stroke="#f4c430" stroke-width="1.5" class="ring"/>
+<g class="hot dance" data-card="paulilo" transform="translate(573 392)">
+  <ellipse class="person-shadow" cx="0" cy="44" rx="10" ry="3"/>
+  <circle cx="0" cy="0" r="8" fill="#a06b50"/>
+  <rect x="-7" y="8" width="14" height="18" fill="#7a3a8e"/>
+  <rect x="-3" y="26" width="4" height="14" fill="#0f121c"/>
+  <rect x="1" y="26" width="4" height="14" fill="#0f121c"/>
+  <rect x="-22" y="-14" width="44" height="60" fill="none" stroke="#f4c430" stroke-width="1" class="ring"/>
 </g>
 
-<g class="hot in-overview" data-zoom="p2" data-card="p2">
-<rect x="220" y="425" width="142" height="32" fill="#2d4a8a" stroke="#1a1d2a" stroke-width="1"/>
-<polygon points="232,425 250,406 332,406 350,425" fill="#2d4a8a" stroke="#1a1d2a" stroke-width="1"/>
-<rect x="252" y="412" width="78" height="12" fill="#0d1018"/>
-<rect x="261" y="415" width="15" height="6" fill="#f4c430"/>
-<rect x="306" y="415" width="15" height="6" fill="#f4c430"/>
-<rect x="222" y="438" width="6" height="10" fill="#f4c430"/>
-<rect x="354" y="438" width="6" height="10" fill="#d83b2f"/>
-<rect x="305" y="425" width="56" height="34" fill="#0d1018"/>
-<circle cx="324" cy="442" r="13" fill="#1a1d2a" stroke="#d83b2f" stroke-width="2" class="pp-shk"/>
-<circle cx="324" cy="442" r="6" fill="#d83b2f"/>
-<circle cx="350" cy="442" r="10" fill="#1a1d2a" stroke="#f4c430" stroke-width="1.5"/>
-<circle cx="350" cy="442" r="4" fill="#f4c430"/>
-<circle cx="245" cy="465" r="11" fill="#1a1d2a"/>
-<circle cx="335" cy="465" r="11" fill="#1a1d2a"/>
-<rect x="215" y="402" width="155" height="68" fill="none" stroke="#f4c430" stroke-width="1.5" class="ring"/>
+<g class="hot" data-card="policia" transform="translate(650 490)">
+  <rect x="-32" y="-12" width="32" height="14" fill="#f5ede0"/>
+  <polygon points="-28,-12 -22,-22 -8,-22 -2,-12" fill="#f5ede0"/>
+  <circle cx="-25" cy="3" r="4" fill="#0f121c"/>
+  <circle cx="-7" cy="3" r="4" fill="#0f121c"/>
+  <rect x="-36" y="-26" width="40" height="32" fill="none" stroke="#f4c430" stroke-width="1" class="ring"/>
 </g>
 
-<g class="hot in-p1" data-card="p1-letrero" pointer-events="none">
-<rect x="55" y="285" width="120" height="16" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p1" data-card="p1-tweet" pointer-events="none">
-<rect x="60" y="306" width="115" height="14" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p1" data-card="p1-mid" pointer-events="none">
-<rect x="65" y="326" width="100" height="20" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p1" data-card="p1-sub" pointer-events="none">
-<rect x="60" y="348" width="108" height="26" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p1" data-card="p1-dutos" pointer-events="none">
-<rect x="60" y="375" width="108" height="30" fill="none" pointer-events="all"/>
 </g>
 
-<g class="hot in-p2" data-card="p2-sub" pointer-events="none">
-<rect x="305" y="425" width="56" height="34" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p2" data-card="p2-cabine" pointer-events="none">
-<rect x="248" y="406" width="86" height="20" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p2" data-card="p2-corpo" pointer-events="none">
-<rect x="222" y="425" width="80" height="34" fill="none" pointer-events="all"/>
-</g>
-
-<g class="hot in-p3" data-card="p3-bandeira" pointer-events="none">
-<rect x="425" y="301" width="130" height="22" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p3" data-card="p3-voz" pointer-events="none">
-<rect x="425" y="328" width="130" height="20" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p3" data-card="p3-shake" pointer-events="none">
-<rect x="425" y="350" width="130" height="26" fill="none" pointer-events="all"/>
-</g>
-<g class="hot in-p3" data-card="p3-letrero" pointer-events="none">
-<rect x="425" y="285" width="130" height="16" fill="none" pointer-events="all"/>
-</g>
-
-<g class="hot in-overview pp-d1" data-card="lekinho" transform="translate(195 360)">
-<circle cx="0" cy="0" r="8" fill="#8b5a2b"/>
-<rect x="-5" y="-2" width="10" height="5" fill="#1a1d2a"/>
-<rect x="-1" y="-1" width="2" height="2" fill="#f4c430"/>
-<rect x="-3" y="-1" width="2" height="2" fill="#f4c430"/>
-<rect x="-7" y="9" width="14" height="20" fill="#f5ede0"/>
-<rect x="-2" y="14" width="4" height="2" fill="#f4c430"/>
-<rect x="-3" y="29" width="5" height="14" fill="#2d4a8a"/>
-<rect x="2" y="29" width="5" height="14" fill="#2d4a8a"/>
-<line x1="7" y1="14" x2="14" y2="6" stroke="#8b5a2b" stroke-width="3" stroke-linecap="round"/>
-<rect x="13" y="2" width="3" height="8" fill="#1a1d2a"/>
-<circle cx="14" cy="1" r="3" fill="#3a3f55"/>
-<circle cx="0" cy="0" r="22" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g class="hot in-overview" data-card="construtor" transform="translate(40 380)">
-<circle cx="0" cy="0" r="7" fill="#8b5a2b"/>
-<rect x="-4" y="-5" width="9" height="3" fill="#d83b2f"/>
-<rect x="-6" y="6" width="12" height="18" fill="#3a8a6c"/>
-<rect x="-3" y="24" width="4" height="12" fill="#1a1d2a"/>
-<rect x="1" y="24" width="4" height="12" fill="#1a1d2a"/>
-<line x1="6" y1="10" x2="14" y2="18" stroke="#8b5a2b" stroke-width="2.5" stroke-linecap="round"/>
-<rect x="12" y="15" width="6" height="3" fill="#3a3f55"/>
-<rect x="14" y="11" width="3" height="10" fill="#3a3f55"/>
-<circle cx="0" cy="0" r="20" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g class="hot in-overview pp-d4" data-card="frequentadora" transform="translate(385 470)">
-<circle cx="0" cy="0" r="8" fill="#5a3820"/>
-<path d="M -8 -5 Q -10 -10 -4 -10 Q 0 -12 4 -10 Q 10 -10 8 -5 L 8 0 L -8 0 Z" fill="#1a1d2a"/>
-<rect x="-7" y="8" width="14" height="14" fill="#d83b2f"/>
-<rect x="-7" y="22" width="14" height="10" fill="#1a1d2a"/>
-<rect x="-4" y="32" width="3" height="12" fill="#5a3820"/>
-<rect x="1" y="32" width="3" height="12" fill="#5a3820"/>
-<line x1="-7" y1="12" x2="-14" y2="4" stroke="#5a3820" stroke-width="3" stroke-linecap="round"/>
-<line x1="7" y1="12" x2="14" y2="4" stroke="#5a3820" stroke-width="3" stroke-linecap="round"/>
-<circle cx="0" cy="0" r="22" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g class="hot in-overview pp-d2" data-card="chacal" transform="translate(265 470)">
-<circle cx="0" cy="0" r="8" fill="#3a2818"/>
-<rect x="-7" y="-5" width="14" height="3" fill="#1a1d2a"/>
-<circle cx="-3" cy="-1" r="2" fill="#1a1d2a"/>
-<circle cx="3" cy="-1" r="2" fill="#1a1d2a"/>
-<rect x="-7" y="8" width="14" height="18" fill="#f4c430"/>
-<rect x="-2" y="12" width="4" height="2" fill="#1a1d2a"/>
-<rect x="-3" y="26" width="3" height="14" fill="#2d4a8a"/>
-<rect x="2" y="26" width="3" height="14" fill="#2d4a8a"/>
-<line x1="-7" y1="14" x2="-13" y2="10" stroke="#3a2818" stroke-width="2.5" stroke-linecap="round"/>
-<line x1="7" y1="14" x2="13" y2="22" stroke="#3a2818" stroke-width="2.5" stroke-linecap="round"/>
-<circle cx="0" cy="0" r="22" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g class="hot in-overview pp-d3" data-card="paulilo" transform="translate(573 360)">
-<circle cx="0" cy="0" r="8" fill="#a06b50"/>
-<path d="M -9 -3 Q -10 -10 0 -12 Q 10 -10 9 -3 Q 8 4 0 5 Q -8 4 -9 -3 Z" fill="#d83b2f"/>
-<rect x="-7" y="8" width="14" height="18" fill="#7a3a8e"/>
-<rect x="-7" y="11" width="14" height="3" fill="#f4c430"/>
-<rect x="-3" y="26" width="4" height="14" fill="#1a1d2a"/>
-<rect x="1" y="26" width="4" height="14" fill="#1a1d2a"/>
-<line x1="-7" y1="14" x2="-14" y2="22" stroke="#a06b50" stroke-width="2.5" stroke-linecap="round"/>
-<line x1="7" y1="14" x2="14" y2="22" stroke="#a06b50" stroke-width="2.5" stroke-linecap="round"/>
-<circle cx="0" cy="0" r="22" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g class="hot in-overview" data-card="acaraje" transform="translate(630 478)">
-<rect x="-22" y="0" width="44" height="18" fill="#f5ede0"/>
-<rect x="-22" y="0" width="44" height="3" fill="#d83b2f"/>
-<circle cx="-12" cy="9" r="3" fill="#d4711d"/>
-<circle cx="0" cy="9" r="3" fill="#d4711d"/>
-<circle cx="12" cy="9" r="3" fill="#d4711d"/>
-<g transform="translate(-32 -8)">
-<circle cx="0" cy="0" r="7" fill="#5a3820"/>
-<rect x="-5" y="-4" width="10" height="2" fill="#f5ede0"/>
-<rect x="-6" y="6" width="12" height="14" fill="#3a8a6c"/>
-<rect x="-7" y="6" width="14" height="3" fill="#f5ede0"/>
-<rect x="-3" y="20" width="3" height="8" fill="#1a1d2a"/>
-<rect x="1" y="20" width="3" height="8" fill="#1a1d2a"/>
-</g>
-<rect x="-40" y="-15" width="60" height="40" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g class="hot in-overview" data-card="pesquisa" transform="translate(40 475)">
-<circle cx="0" cy="0" r="5" fill="#5a3820"/>
-<rect x="-3" y="5" width="6" height="10" fill="#3a3f55"/>
-<rect x="-2" y="15" width="2" height="7" fill="#1a1d2a"/>
-<rect x="1" y="15" width="2" height="7" fill="#1a1d2a"/>
-<rect x="-6" y="-3" width="3" height="2" fill="#1a1d2a"/>
-<rect x="3" y="-3" width="3" height="2" fill="#1a1d2a"/>
-<rect x="-7" y="-4" width="14" height="1" fill="#1a1d2a"/>
-<g transform="translate(12 -2)">
-<circle cx="0" cy="0" r="5" fill="#8b5a2b"/>
-<rect x="-3" y="5" width="6" height="10" fill="#d83b2f"/>
-<rect x="-2" y="15" width="2" height="7" fill="#1a1d2a"/>
-<rect x="1" y="15" width="2" height="7" fill="#1a1d2a"/>
-</g>
-<g transform="translate(24 0)">
-<circle cx="0" cy="0" r="5" fill="#a06b50"/>
-<rect x="-3" y="5" width="6" height="10" fill="#f5ede0"/>
-<rect x="-2" y="15" width="2" height="7" fill="#1a1d2a"/>
-<rect x="1" y="15" width="2" height="7" fill="#1a1d2a"/>
-</g>
-<rect x="-12" y="-10" width="50" height="38" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g class="hot in-overview" data-card="policia" transform="translate(660 490)">
-<rect x="-32" y="-12" width="32" height="14" fill="#f5ede0" stroke="#1a1d2a" stroke-width="0.8"/>
-<polygon points="-28,-12 -22,-22 -8,-22 -2,-12" fill="#f5ede0" stroke="#1a1d2a" stroke-width="0.8"/>
-<rect x="-22" y="-22" width="14" height="8" fill="#0d1018"/>
-<rect x="-28" y="-6" width="6" height="6" fill="#2d4a8a"/>
-<rect x="-8" y="-6" width="6" height="6" fill="#d83b2f" class="pp-blink"/>
-<circle cx="-25" cy="3" r="4" fill="#1a1d2a"/>
-<circle cx="-7" cy="3" r="4" fill="#1a1d2a"/>
-<text x="-16" y="-1" text-anchor="middle" fill="#1a1d2a" font-family="var(--font-sans)" font-size="6" font-weight="500">PM</text>
-<rect x="-36" y="-26" width="40" height="32" fill="none" stroke="#f4c430" stroke-width="1.2" class="ring"/>
-</g>
-
-<g fill="none">
-<g transform="translate(155 470)">
-<circle cx="0" cy="0" r="4" fill="#f4c430" class="pp-d1"/>
-<rect x="-2" y="4" width="4" height="8" fill="#d83b2f"/>
-</g>
-<g transform="translate(330 475)">
-<circle cx="0" cy="0" r="4" fill="#e9a09a" class="pp-d2"/>
-<rect x="-2" y="4" width="4" height="8" fill="#2d4a8a"/>
-</g>
-<g transform="translate(440 478)">
-<circle cx="0" cy="0" r="4" fill="#3a8a6c" class="pp-d1"/>
-<rect x="-2" y="4" width="4" height="8" fill="#f4c430"/>
-</g>
-<g transform="translate(490 475)">
-<circle cx="0" cy="0" r="4" fill="#d83b2f" class="pp-d3"/>
-<rect x="-2" y="4" width="4" height="8" fill="#1a1d2a"/>
-</g>
-<g transform="translate(530 478)">
-<circle cx="0" cy="0" r="4" fill="#2d4a8a" class="pp-d2"/>
-<rect x="-2" y="4" width="4" height="8" fill="#e9a09a"/>
-</g>
-<g transform="translate(230 380)">
-<circle cx="0" cy="0" r="4" fill="#f4c430" class="pp-d1"/>
-<rect x="-2" y="4" width="4" height="8" fill="#3a8a6c"/>
-</g>
-<g transform="translate(380 388)">
-<circle cx="0" cy="0" r="4" fill="#e9a09a" class="pp-d2"/>
-<rect x="-2" y="4" width="4" height="8" fill="#d83b2f"/>
-</g>
-<g transform="translate(160 385)">
-<circle cx="0" cy="0" r="4" fill="#d83b2f" class="pp-d3"/>
-<rect x="-2" y="4" width="4" height="8" fill="#f4c430"/>
-</g>
-<g transform="translate(95 460)">
-<circle cx="0" cy="0" r="4" fill="#2d4a8a" class="pp-d1"/>
-<rect x="-2" y="4" width="4" height="8" fill="#3a8a6c"/>
-</g>
-</g>
-
-<text x="20" y="528" fill="#3a3f55" font-family="var(--font-mono)" font-size="9" letter-spacing="0.18em">cidade traduzida em som</text>
+<text x="20" y="528" fill="#5f6576" font-size="10" letter-spacing="3">cidade traduzida em som</text>
 
 </svg>
-</div>
-
-<div class="pp-bar">
-<span class="st" id="pp-status">vista geral · um bairro à noite</span>
-<button class="pp-back" id="pp-back" type="button">← voltar à cena</button>
-</div>
-
-<div class="pp-card">
-<div class="tag" id="pp-tag">comece por qualquer canto</div>
-<div class="ttl" id="pp-ttl">três paredões, uma rua, um sábado</div>
-<p id="pp-txt">Toque numa pessoa para ouvir o que ela diria. Toque num paredão para entrar dentro dele e descobrir as peças, uma a uma. O carro da polícia ali no canto também tem o que dizer.</p>
-</div>
-
-<div class="pp-hint">os anéis dourados marcam o que pode ser tocado</div>
 
 </div>
+
+<div class="side">
+
+<div class="panel status">
+  <span id="status">vista geral · um bairro à noite</span>
+  <button id="back" class="hidden">← voltar</button>
+</div>
+
+<div class="panel">
+  <div class="card-tag" id="tag">comece por qualquer canto</div>
+  <div class="card-title" id="title">três paredões, uma rua, um sábado</div>
+  <div class="card-text" id="text">
+    Toque nas pessoas e nos paredões para explorar histórias, disputas urbanas e a engenharia popular do som automotivo.
+  </div>
+</div>
+
+<div class="panel hint">
+  Os círculos dourados indicam pontos interativos. Toque num paredão para entrar nele.
+</div>
+
+</div>
+
+</section>
+
+</main>
 
 <script>
-(function(){
-  var svg = document.getElementById('pp-svg');
-  var statusEl = document.getElementById('pp-status');
-  var backBtn = document.getElementById('pp-back');
-  var tagEl = document.getElementById('pp-tag');
-  var ttlEl = document.getElementById('pp-ttl');
-  var txtEl = document.getElementById('pp-txt');
 
-  var VIEWS = {
-    overview: {vb:[0,0,680,540], status:'vista geral · um bairro à noite'},
-    p1: {vb:[35,265,210,168], status:'dentro do paredão hulk'},
-    p2: {vb:[195,388,200,160], status:'dentro do som de mala'},
-    p3: {vb:[405,265,220,168], status:'dentro do paredão paulilo'}
-  };
+const scene = document.getElementById('scene');
+const back = document.getElementById('back');
+const statusEl = document.getElementById('status');
+const tagEl = document.getElementById('tag');
+const titleEl = document.getElementById('title');
+const textEl = document.getElementById('text');
 
-  var CARDS = {
-    lekinho: {
-      tag: 'lekinho · cantor de pagodão',
-      title: 'canto do jeito que a galera conversa',
-      text: 'Herdou o vocal da Ah Chapa e estourou em 2024 com hits como dedo nesse paredão. Em março daquele ano foram 15 shows em três cidades. A fórmula: bordões que entram no TikTok antes da rádio.'
-    },
-    construtor: {
-      tag: 'construtor · oficina de paredão',
-      title: 'tem que achar o ponto que cuspe grave',
-      text: 'Sem manual, sem curso. Só ouvido e mão. Sabe dimensionar volume de caixa, calcular duto, distribuir baterias. A academia chama isso de tecnologia situada. Ele chama de mexer no bicho.'
-    },
-    chacal: {
-      tag: 'chacal · dono de paredão',
-      title: 'tem festa, todo mundo ganha',
-      text: 'A manicure ganha porque as meninas se arrumam. O bazar vende roupa. O depósito vende bebida. A moça do acarajé fatura. Antes de música, o paredão é um motor de microeconomia.'
-    },
-    frequentadora: {
-      tag: 'frequentadora · 19 anos · Santo Amaro',
-      title: 'paredão é uma festa de favela',
-      text: 'Livre para todo mundo. Se você tem que pagar já fica chato. Pra ela, favela não é tipo de moradia. É a sociabilidade da rua, o encontro cara a cara, e a cidade que só existe quando o som liga.'
-    },
-    paulilo: {
-      tag: 'paulilo paredão · produtora não-binária',
-      title: 'primeiro paredão 120 por cento LGBTQIAPN+ do nordeste',
-      text: 'Travestis, mulheres e gays no protagonismo. Como diz a banda A Travestis: roqueiras, pirigóticas, trevosas, mas curtimos um pagodão. A cultura do paredão está sendo disputada por dentro.'
-    },
-    acaraje: {
-      tag: 'tia · bebida e comida',
-      title: 'a economia que cabe na bandeja',
-      text: 'Acarajé, cerveja gelada, água, cabelo trançado, unha feita. Tudo o que circula numa festa de paredão sustenta dezenas de trabalhadores informais que ficam de fora dos festivais pagos.'
-    },
-    pesquisa: {
-      tag: 'pesquisadores · UFRB e PUC-SP',
-      title: 'a cidade vivida traduzida em som',
-      text: 'Júlia Sardenberg, Lucio Agra e Regiane Nakagawa acompanharam paredões em Santo Amaro e Cachoeira por anos. A frase é deles, ecoando McLuhan: o paredão não toca a cidade, faz a cidade.'
-    },
-    policia: {
-      tag: 'polícia · lei municipal 5.354/98',
-      title: 'até 70 decibéis das 7h às 22h',
-      text: 'Um paredão profissional chega a 110. Mas a apreensão é seletiva: 63 equipamentos confiscados em dois meses de 2024 em Salvador, todos em bairros periféricos. Trio elétrico do carnaval atinge volumes iguais e raramente é abordado.'
-    },
-    p1: {
-      tag: 'paredão hulk · profissional',
-      title: 'uma fachada de quatro toneladas',
-      text: 'Custa entre dois e cinco milhões. Caixas modulares empilhadas, gerador próprio, até doze baterias de caminhão. Você está dentro dele agora. Toque nas peças.'
-    },
-    'p1-letrero': {
-      tag: 'letreiro · luzes neon',
-      title: 'a assinatura de quem é dono',
-      text: 'Cada paredão tem um nome próprio: Hulk, Gibão, Chacal, Digo. O letreiro não é só estética. É marca, é convocação, é jeito de saber qual som chegou na festa.'
-    },
-    'p1-tweet': {
-      tag: 'tweeters · cornetas de agudo',
-      title: 'os brilhos que morrem na esquina',
-      text: 'Vibram muito rápido, frequência alta. Por isso o som que sai delas é direcional, cospe pra frente, e perde força rápido. Não atravessa parede. É chimbau, voz aguda, brilho.'
-    },
-    'p1-mid': {
-      tag: 'drivers de médio · 8 a 12 polegadas',
-      title: 'o corpo da música',
-      text: 'É onde mora a voz, o tambor, a melodia que se reconhece. A média frequência é o que o ouvido humano percebe com mais clareza. Sem ela, o paredão vira só tranco.'
-    },
-    'p1-sub': {
-      tag: 'subwoofers · 18 polegadas',
-      title: 'o coração grave',
-      text: 'Quatro unidades de 46 cm de diâmetro. Vibram devagar e empurram muito ar de cada vez. Ondas longas que contornam paredes, atravessam três ruas, e estouram no estômago. Sem isso, não há paredão.'
-    },
-    'p1-dutos': {
-      tag: 'caixas duto · graves reflexivos',
-      title: 'as caixas que respiram',
-      text: 'O grave não sai direto do cone. Sai do duto da caixa, depois de ser modelado dentro dela. O volume interno e o tamanho do duto definem qual frequência exata cada caixa rende. É aqui que mora a sintonia fina da oficina.'
-    },
-    p2: {
-      tag: 'som de mala · carrocinha',
-      title: 'o paredão mais democrático',
-      text: 'Porta-malas aberto numa praça, qualquer um pede uma música. Em Acupe, distrito de Santo Amaro, os carros se reúnem nas tardes de domingo. Não tem porta, não tem ingresso. É a base da pirâmide.'
-    },
-    'p2-cabine': {
-      tag: 'cabine · operação',
-      title: 'o DJ é o motorista',
-      text: 'O dono do carro escolhe, ou aceita pedido de quem chega. Faz parte do pacto: você chega, fala o que quer ouvir, e a música entra. Nos paredões grandes isso não acontece mais.'
-    },
-    'p2-corpo': {
-      tag: 'carro · base modesta',
-      title: 'o sonho de subir',
-      text: 'Quem está no som de mala almeja sair dali e ir pra carrocinha. Da carrocinha, pra Hilux, Amarok ou Ranger. De lá, pra carreta com placa vertical. É a escada da economia do paredão.'
-    },
-    'p2-sub': {
-      tag: 'subwoofer · no porta-malas',
-      title: 'um só, mas batendo',
-      text: 'Mesmo um som de mala empurra grave por uma rua inteira, com um único alto-falante grande. A física não muda: cone grande, vibração lenta, comprimento de onda longo. Tudo o que importa é o tamanho do ar movido.'
-    },
-    p3: {
-      tag: 'paredão paulilo · LGBTQIAPN+',
-      title: 'outro paredão é possível',
-      text: 'Estrutura idêntica à do paredão profissional. O que muda é quem pega o microfone, quem dança na frente, quem se sente segura. Toque nas peças.'
-    },
-    'p3-letrero': {
-      tag: 'letreiro · neon arco-íris',
-      title: 'reivindicação que pisca',
-      text: 'A bandeira no topo do paredão sinaliza, antes da música começar, qual é o pacto da festa. Pra muita gente, é a primeira vez que pode chegar sem precisar disfarçar.'
-    },
-    'p3-bandeira': {
-      tag: 'bandeira · seis faixas',
-      title: 'reivindicação que pisca',
-      text: 'A bandeira no topo do paredão sinaliza, antes da música começar, qual é o pacto da festa. Pra muita gente, é a primeira vez que pode chegar sem precisar disfarçar.'
-    },
-    'p3-voz': {
-      tag: 'microfones · médios',
-      title: 'voz de quem nunca tinha sido voz',
-      text: 'Tertuliana Lustosa, vocalista trans da banda A Travestis, gravou com Pabllo Vittar. O médio é a faixa onde a voz humana mora. É aqui que se decide quem fala, e quem é ouvido, na festa.'
-    },
-    'p3-shake': {
-      tag: 'subwoofers · idênticos',
-      title: 'mesma física, outra política',
-      text: 'O grave que sai daqui é igual ao grave do paredão Hulk. A mesma compressão, a mesma rarefação, o mesmo comprimento de onda. O que muda é o que vem na voz por cima dele, e quem ele convoca pra rua.'
-    }
-  };
+const views = {
+  overview: [0,0,680,540],
+  p1: [35,265,210,168],
+  p2: [195,388,200,160],
+  p3: [405,265,220,168]
+};
 
-  var current = 'overview';
-  var initialVB = [0,0,680,540];
-  var raf = null;
+const cards = {
 
-  function setView(name, animate){
-    var v = VIEWS[name];
-    if (!v) return;
-    var target = v.vb;
-    statusEl.textContent = v.status;
-    if (name === 'overview') backBtn.classList.remove('show'); else backBtn.classList.add('show');
-    svg.classList.remove('mode-overview','mode-p1','mode-p2','mode-p3');
-    svg.classList.add('mode-' + name);
-    current = name;
-    if (!animate){
-      svg.setAttribute('viewBox', target.join(' '));
-      return;
-    }
-    var startVB = svg.getAttribute('viewBox').split(/\s+/).map(parseFloat);
-    var t0 = performance.now();
-    var dur = 520;
-    if (raf) cancelAnimationFrame(raf);
-    function step(now){
-      var t = Math.min((now - t0) / dur, 1);
-      var e = t<0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
-      var nx = startVB[0] + (target[0]-startVB[0]) * e;
-      var ny = startVB[1] + (target[1]-startVB[1]) * e;
-      var nw = startVB[2] + (target[2]-startVB[2]) * e;
-      var nh = startVB[3] + (target[3]-startVB[3]) * e;
-      svg.setAttribute('viewBox', nx.toFixed(2)+' '+ny.toFixed(2)+' '+nw.toFixed(2)+' '+nh.toFixed(2));
-      if (t < 1) raf = requestAnimationFrame(step);
-    }
-    raf = requestAnimationFrame(step);
+  p1: {
+    tag: 'paredão hulk · profissional',
+    title: 'uma fachada de quatro toneladas',
+    text: 'Caixas modulares empilhadas, subwoofers gigantes e um sistema que transforma a rua inteira em extensão do grave.'
+  },
+
+  p2: {
+    tag: 'som de mala · carrocinha',
+    title: 'o paredão mais democrático',
+    text: 'Porta-malas aberto numa praça. Qualquer pessoa chega, pede uma música e participa da festa.'
+  },
+
+  p3: {
+    tag: 'paredão paulilo · LGBTQIAPN+',
+    title: 'outro paredão é possível',
+    text: 'A mesma física sonora. Outra política de ocupação da rua, do corpo e da festa.'
+  },
+
+  construtor: {
+    tag: 'construtor · oficina',
+    title: 'o engenheiro da rua',
+    text: 'Sem manual e sem laboratório formal. Tudo é aprendido pela prática, escuta e tentativa.'
+  },
+
+  lekinho: {
+    tag: 'lekinho · pagodão',
+    title: 'bordões que viralizam',
+    text: 'O TikTok acelera a circulação do pagodão antes mesmo da rádio tocar a música.'
+  },
+
+  frequentadora: {
+    tag: 'frequentadora · santo amaro',
+    title: 'a cidade só existe quando o som liga',
+    text: 'Pra muita gente, o paredão é o espaço onde a rua volta a ser encontro.'
+  },
+
+  paulilo: {
+    tag: 'produtora · paulilo paredão',
+    title: 'disputa por dentro da cultura',
+    text: 'Travestis, mulheres e pessoas LGBTQIAPN+ ocupando uma cena historicamente masculinizada.'
+  },
+
+  policia: {
+    tag: 'polícia · fiscalização sonora',
+    title: 'a apreensão é seletiva',
+    text: 'Os conflitos sobre ruído também são disputas sobre quem pode ocupar a cidade.'
   }
 
-  function showCard(id){
-    var c = CARDS[id];
-    if (!c) return;
-    tagEl.textContent = c.tag;
-    ttlEl.textContent = c.title;
-    txtEl.textContent = c.text;
+};
+
+function animateView(targetName) {
+
+  const target = views[targetName];
+  const current = scene.getAttribute('viewBox').split(' ').map(Number);
+
+  let start = null;
+
+  if (targetName === 'overview') {
+    scene.className.baseVal = 'mode-overview';
+    back.classList.add('hidden');
+    statusEl.textContent = 'vista geral · um bairro à noite';
+  } else {
+    scene.className.baseVal = `mode-${targetName}`;
+    back.classList.remove('hidden');
+    statusEl.textContent = `imersão · ${targetName}`;
   }
 
-  document.querySelectorAll('.pp .hot').forEach(function(el){
-    el.addEventListener('click', function(e){
-      e.stopPropagation();
-      var zoom = el.getAttribute('data-zoom');
-      var card = el.getAttribute('data-card');
-      if (zoom){
-        setView(zoom, true);
-      }
-      if (card){
-        showCard(card);
-      }
+  function frame(time) {
+
+    if (!start) start = time;
+
+    const progress = Math.min((time - start) / 700, 1);
+
+    const eased = progress < .5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+    const values = current.map((v, i) => {
+      return v + (target[i] - v) * eased;
     });
+
+    scene.setAttribute('viewBox', values.join(' '));
+
+    if (progress < 1) requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function showCard(id) {
+
+  const card = cards[id];
+
+  if (!card) return;
+
+  tagEl.textContent = card.tag;
+  titleEl.textContent = card.title;
+  textEl.textContent = card.text;
+}
+
+
+document.querySelectorAll('.hot').forEach(el => {
+
+  el.addEventListener('click', () => {
+
+    const zoom = el.dataset.zoom;
+    const card = el.dataset.card;
+
+    if (zoom) animateView(zoom);
+
+    if (card) showCard(card);
+
   });
 
-  backBtn.addEventListener('click', function(){
-    setView('overview', true);
-    showCard('init');
-  });
+});
 
-  CARDS.init = {
-    tag: 'comece por qualquer canto',
-    title: 'três paredões, uma rua, um sábado',
-    text: 'Toque numa pessoa para ouvir o que ela diria. Toque num paredão para entrar dentro dele e descobrir as peças. O carro da polícia ali no canto também tem o que dizer.'
-  };
+back.addEventListener('click', () => {
+  animateView('overview');
+});
 
-  setView('overview', false);
-})();
 </script>
+
+</body>
+</html>
