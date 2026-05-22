@@ -33,11 +33,59 @@
     overflow-x: hidden;
   }
 
-  /* ─── LAYOUT ─── */
-  .wrapper {
+  /* ─── SCROLLYTELLING LAYOUT NOVO ─── */
+  .scrolly-wrapper {
+    position: relative;
     max-width: 760px;
     margin: 0 auto;
-    padding: 0 0 60px;
+  }
+
+  .palco-fixo {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 0;
+  }
+
+  .textos-scroll {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 50vh;
+    pointer-events: none; /* Para não bloquear cliques no palco */
+  }
+
+  .passo {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+  }
+
+  .passo .card-principal {
+    pointer-events: auto;
+    max-width: 400px;
+    width: 100%;
+    background: rgba(20, 22, 32, 0.95);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    transform: translateY(20px);
+    opacity: 0.2;
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .passo.ativo .card-principal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (min-width: 768px) {
+    .passo {
+      justify-content: flex-end;
+      padding-right: 5%;
+    }
   }
 
   /* ─── HEADER ─── */
@@ -79,36 +127,6 @@
     display: block;
   }
 
-  /* ─── TOOLBAR DOS MODOS ─── */
-  .modos-bar {
-    display: flex;
-    gap: 4px;
-    padding: 16px 24px 0;
-    flex-wrap: wrap;
-  }
-  .modo-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 5px 10px;
-    border: 1px solid var(--cinza);
-    background: transparent;
-    color: var(--texto2);
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.18s;
-    white-space: nowrap;
-  }
-  .modo-btn:hover { border-color: var(--ouro); color: var(--ouro); }
-  .modo-btn.ativo { background: var(--ouro); color: var(--noite); border-color: var(--ouro); }
-  .modo-btn.especial { border-color: var(--rosa); color: var(--rosa); }
-  .modo-btn.especial:hover, .modo-btn.especial.ativo { background: var(--rosa); color: white; border-color: var(--rosa); }
-  .modo-btn.azul { border-color: var(--azul); color: #5a7acc; }
-  .modo-btn.azul:hover, .modo-btn.azul.ativo { background: var(--azul); color: white; border-color: var(--azul); }
-  .modo-btn.verde { border-color: var(--verde); color: #5aaa88; }
-  .modo-btn.verde:hover, .modo-btn.verde.ativo { background: var(--verde); color: white; border-color: var(--verde); }
-
   /* ─── PALCO SVG ─── */
   .palco {
     position: relative;
@@ -133,53 +151,13 @@
     opacity: 0;
     transition: opacity 0.4s;
   }
-  .overlay-canvas.visivel { opacity: 1; }
 
-  /* ─── BARRA DE STATUS ─── */
-  .status-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 24px;
-    margin-top: 0;
-    background: var(--noite2);
-    border-top: 1px solid var(--cinza);
-  }
-  .status-texto {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    color: var(--texto2);
-    text-transform: uppercase;
-  }
-  .status-voltar {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    background: transparent;
-    border: 1px solid var(--cinza);
-    color: var(--texto2);
-    padding: 4px 10px;
-    cursor: pointer;
-    display: none;
-    letter-spacing: 0.1em;
-    transition: all 0.18s;
-  }
-  .status-voltar:hover { border-color: var(--ouro); color: var(--ouro); }
-  .status-voltar.show { display: block; }
-
-  /* ─── CARD DE INFORMAÇÃO ─── */
-  .card-area {
-    margin: 8px 24px 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
+  /* ─── CARD DE INFORMAÇÃO ORIGINAL ─── */
   .card-principal {
     background: var(--noite2);
     border: 1px solid var(--cinza);
     border-radius: 4px;
     padding: 18px 20px;
-    min-height: 100px;
     transition: border-color 0.25s;
     position: relative;
     overflow: hidden;
@@ -217,7 +195,9 @@
     color: var(--texto2);
   }
 
-  /* ─── PAINEL DE CAMADAS (painéis secundários) ─── */
+  /* ─── PAINEL DE CAMADAS E OUTRAS SEÇÕES (Rodapé) ─── */
+  .wrapper-baixo { max-width: 760px; margin: 0 auto; padding-bottom: 60px; }
+  
   .painel-camadas {
     display: none;
     margin: 8px 24px 0;
@@ -225,139 +205,31 @@
     grid-template-columns: 1fr 1fr;
   }
   .painel-camadas.visivel { display: grid; }
-  .camada-btn {
-    background: var(--noite2);
-    border: 1px solid var(--cinza);
-    border-radius: 4px;
-    padding: 12px 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-  }
+  .camada-btn { background: var(--noite2); border: 1px solid var(--cinza); border-radius: 4px; padding: 12px 14px; cursor: pointer; transition: all 0.2s; text-align: left; }
   .camada-btn:hover { border-color: var(--ouro); }
   .camada-btn.on { border-color: var(--ouro); background: rgba(240,185,48,0.08); }
-  .camada-btn .cb-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--texto2);
-    display: block;
-    margin-bottom: 3px;
-  }
-  .camada-btn .cb-nome {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--texto);
-  }
-  .camada-btn .cb-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--cinza);
-    display: inline-block;
-    margin-right: 6px;
-    transition: background 0.2s;
-    vertical-align: middle;
-  }
+  .camada-btn .cb-label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--texto2); display: block; margin-bottom: 3px; }
+  .camada-btn .cb-nome { font-size: 13px; font-weight: 500; color: var(--texto); }
+  .camada-btn .cb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cinza); display: inline-block; margin-right: 6px; transition: background 0.2s; vertical-align: middle; }
   .camada-btn.on .cb-dot { background: var(--ouro); box-shadow: 0 0 6px var(--ouro); }
 
   /* ─── COMPARADOR DB ─── */
-  .comparador {
-    display: none;
-    margin: 8px 24px 0;
-    background: var(--noite2);
-    border: 1px solid var(--cinza);
-    border-radius: 4px;
-    padding: 16px 20px;
-  }
+  .comparador { display: none; margin: 8px 24px 0; background: var(--noite2); border: 1px solid var(--cinza); border-radius: 4px; padding: 16px 20px; }
   .comparador.visivel { display: block; }
-  .comp-titulo {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--texto2);
-    margin-bottom: 14px;
-  }
-  .comp-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .comp-nome {
-    font-size: 11px;
-    font-family: 'Space Mono', monospace;
-    color: var(--texto2);
-    width: 140px;
-    flex-shrink: 0;
-  }
-  .comp-barra-wrap {
-    flex: 1;
-    height: 8px;
-    background: var(--cinza);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .comp-barra {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.8s cubic-bezier(0.22,1,0.36,1);
-    width: 0;
-  }
-  .comp-db {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--texto);
-    width: 36px;
-    text-align: right;
-  }
+  .comp-titulo { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--texto2); margin-bottom: 14px; }
+  .comp-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .comp-nome { font-size: 11px; font-family: 'Space Mono', monospace; color: var(--texto2); width: 140px; flex-shrink: 0; }
+  .comp-barra-wrap { flex: 1; height: 8px; background: var(--cinza); border-radius: 2px; overflow: hidden; }
+  .comp-barra { height: 100%; border-radius: 2px; transition: width 0.8s cubic-bezier(0.22,1,0.36,1); width: 0; }
+  .comp-db { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--texto); width: 36px; text-align: right; }
 
   /* ─── MAPA PROPAGAÇÃO ─── */
-  .mapa-prop {
-    display: none;
-    margin: 8px 24px 0;
-    background: var(--noite2);
-    border: 1px solid var(--cinza);
-    border-radius: 4px;
-    overflow: hidden;
-  }
+  .mapa-prop { display: none; margin: 8px 24px 0; background: var(--noite2); border: 1px solid var(--cinza); border-radius: 4px; overflow: hidden; }
   .mapa-prop.visivel { display: block; }
-  .mapa-prop canvas {
-    display: block;
-    width: 100%;
-    aspect-ratio: 2/1;
-  }
-  .mapa-legenda {
-    padding: 8px 16px;
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .mapa-legenda-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    color: var(--texto2);
-  }
-  .mapa-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-  }
-
-  /* ─── DICA ─── */
-  .dica {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    color: var(--cinza);
-    text-align: center;
-    padding: 10px 24px 0;
-    text-transform: uppercase;
-  }
+  .mapa-prop canvas { display: block; width: 100%; aspect-ratio: 2/1; }
+  .mapa-legenda { padding: 8px 16px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .mapa-legenda-item { display: flex; align-items: center; gap: 6px; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--texto2); }
+  .mapa-dot { width: 8px; height: 8px; border-radius: 50%; }
 
   /* ─── SVG PERSONAGENS E ANIMAÇÕES ─── */
   @keyframes pulso { 0%,100%{r:8;opacity:.85} 100%{r:90;opacity:0} }
@@ -385,948 +257,339 @@
   .ring { opacity: 0; transition: opacity .18s; pointer-events: none; }
   .hot:hover .ring { opacity: .9; }
 
-  .mode-overview .in-overview { pointer-events: auto; }
-  .mode-p1 .in-p1 { pointer-events: auto; }
-  .mode-p2 .in-p2 { pointer-events: auto; }
-  .mode-p3 .in-p3 { pointer-events: auto; }
-
-  /* ondas sonoras moduladas por modo */
   .onda { opacity: 0; transition: opacity .5s; }
   .show-ondas .onda { opacity: 1; }
   .show-grave .onda-grave { opacity: 1; }
   .show-agudo .onda-agudo { opacity: 1; }
 
-  /* visões */
   .visao-policia, .visao-vendedor, .visao-frequentadora { opacity: 0; transition: opacity .4s; pointer-events: none; }
   .show-policia .visao-policia { opacity: 1; }
   .show-vendedor .visao-vendedor { opacity: 1; }
   .show-frequentadora .visao-frequentadora { opacity: 1; }
 
-  /* névoa de fundo */
   .fog { animation: fogrise 8s ease-in-out infinite; }
   .fog2 { animation: fogrise 11s ease-in-out infinite 3s; }
   .fog3 { animation: fogrise 9s ease-in-out infinite 6s; }
 
-  /* ─── RESPONSIVO OTIMIZADO CELULAR ─── */
-  @media (max-width: 768px) {
-    /* 1. Ajuste de Header */
-    .cabecalho { padding: 20px 16px 0; flex-direction: column; align-items: flex-start; gap: 8px; }
-    .cabecalho-db { text-align: left; }
-    .cabecalho-titulo { font-size: clamp(32px, 9vw, 42px); }
-
-    /* 2. Menu de Modos (Botões enfileirados) */
-    .modos-bar { padding: 16px 16px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .modo-btn { width: 100%; text-align: center; font-size: 10px; padding: 8px 6px; }
-    .modo-btn:first-child { grid-column: span 2; } /* Cena em destaque */
-
-    /* 3. O Palco SVG (Garante que não seja amassado) */
-    .palco { margin: 12px 16px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 4px; }
-    #svg-main { min-width: 800px; /* Trava o SVG forçando scroll lateral */ }
-
-    /* 4. Barra de Status */
-    .status-bar { padding: 12px 16px; flex-direction: column; align-items: flex-start; gap: 10px; }
-    .status-voltar { width: 100%; text-align: center; padding: 10px; }
-
-    /* 5. Painéis de Informação (Cards) */
-    .card-area { margin: 12px 16px 0; }
-    .card-principal { padding: 16px; min-height: auto; }
-    .card-titulo { font-size: 18px; line-height: 1.3; }
-    
-    /* 6. Painel Camadas (Agudo / Grave) */
-    .painel-camadas { margin: 12px 16px 0; grid-template-columns: 1fr; gap: 6px; }
-    .camada-btn { padding: 12px; }
-
-    /* 7. Comparador e Mapa */
-    .comparador { margin: 12px 16px 0; padding: 16px; }
-    .comp-item { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 16px; }
-    .comp-nome { width: 100%; font-size: 12px; }
-    .comp-barra-wrap { width: 100%; height: 12px; } /* Deixa a barra mais grossa pra ver no cel */
-    .comp-db { width: 100%; text-align: left; }
-    
-    .mapa-prop { margin: 12px 16px 0; }
-    .mapa-legenda { flex-direction: column; gap: 8px; }
-
-    .dica { padding: 16px; margin-bottom: 20px; }
-  }
   /* ─── SCROLL-REVEAL ─── */
-.secao-scroll {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
-              transform 0.7s cubic-bezier(0.22,1,0.36,1);
-  margin: 0 24px 0;
-}
-.secao-scroll.revelada {
-  opacity: 1;
-  transform: translateY(0);
-}
-.secao-titulo {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--texto2);
-  padding: 28px 0 10px;
-  border-top: 1px solid var(--cinza);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.secao-titulo::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--cinza);
-}
-@media (max-width: 500px) {
-  .secao-scroll { margin: 0 14px 0; }
-}
+  .secao-scroll { opacity: 0; transform: translateY(32px); transition: opacity 0.7s, transform 0.7s; margin: 0 24px 0; }
+  .secao-scroll.revelada { opacity: 1; transform: translateY(0); }
+  .secao-titulo { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--texto2); padding: 28px 0 10px; border-top: 1px solid var(--cinza); display: flex; align-items: center; gap: 10px; }
+  .secao-titulo::after { content: ''; flex: 1; height: 1px; background: var(--cinza); }
 </style>
 </head>
 <body>
 
-<div class="wrapper">
+<div class="scrolly-wrapper">
 
-  <!-- CABEÇALHO -->
-  <header class="cabecalho">
-    <div class="cabecalho-titulo">
-      Paredão
-      <span>cidade traduzida em som · Salvador, BA</span>
-    </div>
-    <div class="cabecalho-db">
-      <em class="db-num">110</em>
-      decibéis<br>a três metros
-    </div>
-  </header>
+  <div class="palco-fixo">
+    <header class="cabecalho">
+      <div class="cabecalho-titulo">
+        Paredão
+        <span>cidade traduzida em som · Salvador, BA</span>
+      </div>
+      <div class="cabecalho-db">
+        <em class="db-num">110</em>
+        decibéis<br>a três metros
+      </div>
+    </header>
 
-  <!-- PALCO -->
-  <div class="palco" id="palco">
-    <svg id="svg-main" viewBox="0 0 760 520" preserveAspectRatio="xMidYMid slice"
-      aria-label="Cena noturna de paredão num bairro periférico de Salvador">
+    <div class="palco" id="palco">
+      <svg id="svg-main" viewBox="0 0 760 520" preserveAspectRatio="xMidYMid slice"
+        aria-label="Cena noturna de paredão num bairro periférico de Salvador">
 
-      <!-- ░░░ CÉU GRADIENTE ░░░ -->
-      <defs>
-        <linearGradient id="ceuGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#050810"/>
-          <stop offset="100%" stop-color="#141a2e"/>
-        </linearGradient>
-        <linearGradient id="chaoGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#111420"/>
-          <stop offset="100%" stop-color="#080a12"/>
-        </linearGradient>
-        <radialGradient id="luzP1" cx="17%" cy="45%" r="28%">
-          <stop offset="0%" stop-color="#c8332a" stop-opacity=".25"/>
-          <stop offset="100%" stop-color="#c8332a" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="luzP3" cx="65%" cy="45%" r="28%">
-          <stop offset="0%" stop-color="#d4427a" stop-opacity=".22"/>
-          <stop offset="100%" stop-color="#d4427a" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="luzP2" cx="42%" cy="80%" r="18%">
-          <stop offset="0%" stop-color="#2a4280" stop-opacity=".2"/>
-          <stop offset="100%" stop-color="#2a4280" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="luaGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#f8ecc0"/>
-          <stop offset="70%" stop-color="#f0b930"/>
-          <stop offset="100%" stop-color="#a07820"/>
-        </radialGradient>
-        <radialGradient id="halosol" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#f0b930" stop-opacity=".12"/>
-          <stop offset="100%" stop-color="#f0b930" stop-opacity="0"/>
-        </radialGradient>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="softglow">
-          <feGaussianBlur stdDeviation="6" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="blur2">
-          <feGaussianBlur stdDeviation="2"/>
-        </filter>
-        <clipPath id="cenaCp">
-          <rect width="760" height="520"/>
-        </clipPath>
-        <!-- padrão xadrez rua -->
-        <pattern id="calçada" width="20" height="20" patternUnits="userSpaceOnUse">
-          <rect width="20" height="20" fill="#0f111e"/>
-          <rect width="10" height="10" fill="#111320"/>
-          <rect x="10" y="10" width="10" height="10" fill="#111320"/>
-        </pattern>
-      </defs>
+        <defs>
+          <linearGradient id="ceuGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#050810"/>
+            <stop offset="100%" stop-color="#141a2e"/>
+          </linearGradient>
+          <linearGradient id="chaoGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#111420"/>
+            <stop offset="100%" stop-color="#080a12"/>
+          </linearGradient>
+          <radialGradient id="luzP1" cx="17%" cy="45%" r="28%">
+            <stop offset="0%" stop-color="#c8332a" stop-opacity=".25"/>
+            <stop offset="100%" stop-color="#c8332a" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="luzP3" cx="65%" cy="45%" r="28%">
+            <stop offset="0%" stop-color="#d4427a" stop-opacity=".22"/>
+            <stop offset="100%" stop-color="#d4427a" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="luzP2" cx="42%" cy="80%" r="18%">
+            <stop offset="0%" stop-color="#2a4280" stop-opacity=".2"/>
+            <stop offset="100%" stop-color="#2a4280" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="luaGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#f8ecc0"/>
+            <stop offset="70%" stop-color="#f0b930"/>
+            <stop offset="100%" stop-color="#a07820"/>
+          </radialGradient>
+          <radialGradient id="halosol" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#f0b930" stop-opacity=".12"/>
+            <stop offset="100%" stop-color="#f0b930" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="softglow">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="blur2">
+            <feGaussianBlur stdDeviation="2"/>
+          </filter>
+          <clipPath id="cenaCp">
+            <rect width="760" height="520"/>
+          </clipPath>
+        </defs>
 
-      <g clip-path="url(#cenaCp)">
+        <g clip-path="url(#cenaCp)">
+        <rect width="760" height="520" fill="url(#ceuGrad)"/>
 
-      <!-- CÉU -->
-      <rect width="760" height="520" fill="url(#ceuGrad)"/>
+        <ellipse cx="130" cy="340" rx="160" ry="200" fill="url(#luzP1)"/>
+        <ellipse cx="500" cy="340" rx="160" ry="200" fill="url(#luzP3)"/>
+        <ellipse cx="320" cy="440" rx="120" ry="100" fill="url(#luzP2)"/>
 
-      <!-- halos de luz dos paredões -->
-      <ellipse cx="130" cy="340" rx="160" ry="200" fill="url(#luzP1)"/>
-      <ellipse cx="500" cy="340" rx="160" ry="200" fill="url(#luzP3)"/>
-      <ellipse cx="320" cy="440" rx="120" ry="100" fill="url(#luzP2)"/>
+        <circle cx="650" cy="68" r="50" fill="url(#halosol)"/>
+        <circle cx="650" cy="68" r="28" fill="url(#luaGrad)" filter="url(#glow)"/>
+        <circle cx="638" cy="62" r="22" fill="#141a2e"/>
 
-      <!-- LUA -->
-      <circle cx="650" cy="68" r="50" fill="url(#halosol)"/>
-      <circle cx="650" cy="68" r="28" fill="url(#luaGrad)" filter="url(#glow)"/>
-      <circle cx="638" cy="62" r="22" fill="#141a2e"/> <!-- cratera sombra -->
-
-      <!-- ESTRELAS -->
-      <g fill="#f5ede0">
-        <circle cx="38" cy="32" r="1.2" class="twk"/>
-        <circle cx="95" cy="18" r="1"/>
-        <circle cx="162" cy="45" r="1.4" class="twk2"/>
-        <circle cx="228" cy="25" r="1"/>
-        <circle cx="295" cy="52" r="1.1"/>
-        <circle cx="368" cy="15" r="1.2" class="twk"/>
-        <circle cx="442" cy="40" r="1.3" class="twk2"/>
-        <circle cx="505" cy="20" r="1"/>
-        <circle cx="568" cy="42" r="1.2" class="twk"/>
-        <circle cx="710" cy="28" r="1.1" class="twk2"/>
-        <circle cx="18" cy="85" r="1.1"/>
-        <circle cx="730" cy="55" r="1.3" class="twk"/>
-        <circle cx="265" cy="100" r="1"/>
-        <circle cx="138" cy="112" r="1.1" class="twk"/>
-        <circle cx="580" cy="90" r="1"/>
-      </g>
-
-      <!-- NÉVOA baixa nos cantos -->
-      <ellipse cx="80" cy="420" rx="120" ry="30" fill="#2a3055" opacity=".08" class="fog"/>
-      <ellipse cx="680" cy="430" rx="100" ry="25" fill="#3a2055" opacity=".07" class="fog2"/>
-      <ellipse cx="380" cy="480" rx="200" ry="20" fill="#1a2540" opacity=".1" class="fog3"/>
-
-      <!-- ░░░ SKYLINE (perspectiva: mais alto = mais atrás, menor) ░░░ -->
-      <!-- linha do horizonte: y=195 -->
-
-      <!-- Casas plano de fundo (muito pequenas, cinza escuro) -->
-      <g fill="#181b2a" opacity=".9">
-        <rect x="0" y="158" width="22" height="37"/>
-        <polygon points="0,158 11,148 22,158"/>
-        <rect x="22" y="150" width="26" height="45"/>
-        <polygon points="22,150 35,138 48,150"/>
-        <rect x="48" y="162" width="38" height="33"/>
-        <polygon points="48,162 67,150 86,162"/>
-        <rect x="86" y="155" width="32" height="40"/>
-        <polygon points="86,155 102,143 118,155"/>
-        <rect x="118" y="160" width="28" height="35"/>
-        <rect x="146" y="152" width="32" height="43"/>
-        <polygon points="146,152 162,140 178,152"/>
-        <rect x="178" y="165" width="36" height="30"/>
-        <rect x="214" y="155" width="30" height="40"/>
-        <polygon points="214,155 229,145 244,155"/>
-        <rect x="244" y="162" width="34" height="33"/>
-        <rect x="278" y="150" width="28" height="45"/>
-        <polygon points="278,150 292,138 306,150"/>
-        <rect x="306" y="158" width="32" height="37"/>
-        <rect x="338" y="162" width="36" height="33"/>
-        <polygon points="338,162 356,150 374,162"/>
-        <rect x="374" y="155" width="30" height="40"/>
-        <rect x="404" y="162" width="34" height="33"/>
-        <polygon points="404,162 421,150 438,162"/>
-        <rect x="438" y="155" width="28" height="40"/>
-        <rect x="466" y="160" width="36" height="35"/>
-        <polygon points="466,160 484,148 502,160"/>
-        <rect x="502" y="154" width="30" height="41"/>
-        <rect x="532" y="162" width="34" height="33"/>
-        <polygon points="532,162 549,150 566,162"/>
-        <rect x="566" y="155" width="30" height="40"/>
-        <rect x="596" y="162" width="36" height="33"/>
-        <rect x="632" y="150" width="32" height="45"/>
-        <polygon points="632,150 648,138 664,150"/>
-        <rect x="664" y="158" width="40" height="37"/>
-        <polygon points="664,158 684,145 704,158"/>
-        <rect x="704" y="162" width="56" height="33"/>
-      </g>
-
-      <!-- janelas distantes -->
-      <g fill="#f0b930" opacity=".35" class="twk">
-        <rect x="8" y="167" width="2" height="3"/>
-        <rect x="30" y="158" width="2" height="3"/>
-        <rect x="55" y="168" width="2" height="3"/>
-        <rect x="96" y="162" width="2" height="3"/>
-        <rect x="128" y="165" width="2" height="3"/>
-        <rect x="160" y="160" width="2" height="3"/>
-        <rect x="196" y="172" width="2" height="3"/>
-        <rect x="224" y="163" width="2" height="3"/>
-        <rect x="258" y="168" width="2" height="3"/>
-        <rect x="292" y="156" width="2" height="3"/>
-        <rect x="344" y="167" width="2" height="3"/>
-        <rect x="382" y="162" width="2" height="3"/>
-        <rect x="415" y="168" width="2" height="3"/>
-        <rect x="450" y="162" width="2" height="3"/>
-        <rect x="478" y="166" width="2" height="3"/>
-        <rect x="512" y="161" width="2" height="3"/>
-        <rect x="547" y="167" width="2" height="3"/>
-        <rect x="576" y="162" width="2" height="3"/>
-        <rect x="610" y="168" width="2" height="3"/>
-        <rect x="645" y="156" width="2" height="3"/>
-        <rect x="678" y="163" width="2" height="3"/>
-      </g>
-
-      <!-- FIOS ELÉTRICOS (perspectiva) -->
-      <g stroke="#0d0f1a" stroke-width="0.8" fill="none" opacity=".7">
-        <path d="M 0 195 Q 180 202 360 196 T 760 195"/>
-        <path d="M 0 200 Q 180 208 360 202 T 760 200"/>
-        <path d="M 50 195 Q 200 210 380 200 T 760 195"/>
-      </g>
-      <!-- Postes de luz (perspectiva: menores ao fundo) -->
-      <g>
-        <rect x="128" y="185" width="2.5" height="210" fill="#0d0f1a"/>
-        <circle cx="129" cy="185" r="5" fill="#f0b930" filter="url(#glow)" class="twk"/>
-        <ellipse cx="129" cy="230" rx="25" ry="8" fill="#f0b930" opacity=".06"/>
-
-        <rect x="404" y="185" width="2.5" height="210" fill="#0d0f1a"/>
-        <circle cx="405" cy="185" r="5" fill="#f0b930" filter="url(#glow)"/>
-        <ellipse cx="405" cy="230" rx="25" ry="8" fill="#f0b930" opacity=".06"/>
-
-        <rect x="616" y="185" width="2.5" height="210" fill="#0d0f1a"/>
-        <circle cx="617" cy="185" r="5" fill="#f0b930" filter="url(#glow)" class="twk2"/>
-        <ellipse cx="617" cy="230" rx="25" ry="8" fill="#f0b930" opacity=".06"/>
-      </g>
-
-      <!-- ░░░ CASAS PRIMEIRO PLANO (mais coloridas, maiores) ░░░ -->
-      <!-- solo / calçada -->
-      <rect x="0" y="380" width="760" height="140" fill="url(#chaoGrad)"/>
-      <!-- calçada com perspectiva -->
-      <rect x="0" y="380" width="760" height="18" fill="#111420"/>
-      <rect x="0" y="396" width="760" height="2" fill="#0a0c18"/>
-      <!-- reflexo na calçada -->
-      <ellipse cx="130" cy="400" rx="70" ry="8" fill="#c8332a" opacity=".08"/>
-      <ellipse cx="500" cy="400" rx="70" ry="8" fill="#d4427a" opacity=".06"/>
-
-      <!-- Casa verde esquerda -->
-      <g>
-        <rect x="0" y="210" width="62" height="170" fill="#2e6850"/>
-        <polygon points="0,210 31,192 62,210" fill="#1a4030"/>
-        <rect x="6" y="228" width="12" height="14" fill="#141a2e"/>
-        <rect x="22" y="228" width="12" height="14" fill="#141a2e"/>
-        <rect x="40" y="228" width="12" height="14" fill="#141a2e"/>
-        <rect x="12" y="254" width="18" height="28" fill="#0d0f1a"/>
-        <!-- sombra embaixo -->
-        <rect x="0" y="375" width="62" height="5" fill="#000" opacity=".3"/>
-      </g>
-
-      <!-- Casa rosa-salmão -->
-      <g>
-        <rect x="62" y="216" width="58" height="164" fill="#d88880"/>
-        <polygon points="62,216 91,198 120,216" fill="#906058"/>
-        <rect x="68" y="232" width="10" height="13" fill="#141a2e"/>
-        <rect x="84" y="232" width="10" height="13" fill="#141a2e"/>
-        <rect x="100" y="232" width="10" height="13" fill="#141a2e"/>
-        <rect x="70" y="258" width="16" height="22" fill="#141a2e"/>
-        <rect x="62" y="373" width="58" height="5" fill="#000" opacity=".3"/>
-      </g>
-
-      <!-- Casas meio: amarela e branca/creme -->
-      <g>
-        <rect x="170" y="204" width="58" height="176" fill="#d8a828"/>
-        <polygon points="170,204 199,188 228,204" fill="#886810"/>
-        <rect x="176" y="220" width="10" height="13" fill="#141a2e"/>
-        <rect x="194" y="220" width="10" height="13" fill="#141a2e"/>
-        <rect x="210" y="220" width="10" height="13" fill="#141a2e"/>
-        <rect x="183" y="246" width="16" height="30" fill="#0d0f1a"/>
-        <rect x="170" y="373" width="58" height="5" fill="#000" opacity=".3"/>
-      </g>
-      <g>
-        <rect x="228" y="212" width="72" height="168" fill="#e8dcc8"/>
-        <polygon points="228,212 264,192 300,212" fill="#a08870"/>
-        <rect x="236" y="228" width="12" height="14" fill="#141a2e"/>
-        <rect x="256" y="228" width="12" height="14" fill="#141a2e"/>
-        <rect x="276" y="228" width="12" height="14" fill="#141a2e"/>
-        <rect x="244" y="255" width="12" height="25" fill="#141a2e"/>
-        <rect x="268" y="255" width="12" height="25" fill="#141a2e"/>
-        <rect x="228" y="373" width="72" height="5" fill="#000" opacity=".3"/>
-      </g>
-
-      <!-- Casa vermelha direita-centro -->
-      <g>
-        <rect x="300" y="208" width="62" height="172" fill="#b02820"/>
-        <polygon points="300,208 331,190 362,208" fill="#701810"/>
-        <rect x="308" y="224" width="10" height="13" fill="#141a2e"/>
-        <rect x="326" y="224" width="10" height="13" fill="#141a2e"/>
-        <rect x="344" y="224" width="10" height="13" fill="#141a2e"/>
-        <rect x="318" y="250" width="16" height="30" fill="#0d0f1a"/>
-        <rect x="300" y="373" width="62" height="5" fill="#000" opacity=".3"/>
-      </g>
-
-      <!-- Casas azul e laranja (depois do P3) -->
-      <g>
-        <rect x="580" y="210" width="60" height="170" fill="#2a3870"/>
-        <polygon points="580,210 610,192 640,210" fill="#181e46"/>
-        <rect x="586" y="226" width="10" height="13" fill="#141a2e"/>
-        <rect x="603" y="226" width="10" height="13" fill="#141a2e"/>
-        <rect x="620" y="226" width="10" height="13" fill="#141a2e"/>
-        <rect x="596" y="250" width="14" height="30" fill="#0d0f1a"/>
-        <rect x="580" y="373" width="60" height="5" fill="#000" opacity=".3"/>
-      </g>
-      <g>
-        <rect x="640" y="215" width="48" height="165" fill="#c47028"/>
-        <polygon points="640,215 664,198 688,215" fill="#7a4010"/>
-        <rect x="647" y="230" width="9" height="12" fill="#141a2e"/>
-        <rect x="663" y="230" width="9" height="12" fill="#141a2e"/>
-        <rect x="655" y="255" width="14" height="25" fill="#0d0f1a"/>
-        <rect x="640" y="373" width="48" height="5" fill="#000" opacity=".3"/>
-      </g>
-      <g>
-        <rect x="688" y="208" width="72" height="172" fill="#2e6850"/>
-        <polygon points="688,208 724,190 760,208" fill="#1a4030"/>
-        <rect x="695" y="225" width="11" height="14" fill="#141a2e"/>
-        <rect x="714" y="225" width="11" height="14" fill="#141a2e"/>
-        <rect x="733" y="225" width="11" height="14" fill="#141a2e"/>
-        <rect x="704" y="252" width="16" height="28" fill="#0d0f1a"/>
-        <rect x="688" y="373" width="72" height="5" fill="#000" opacity=".3"/>
-      </g>
-
-      <!-- ░░░ PAREDÃO P1 — HULK (esquerdo) ░░░ -->
-      <!-- sombra no chão -->
-      <ellipse cx="116" cy="400" rx="75" ry="10" fill="#000" opacity=".5"/>
-      <g class="hot in-overview" data-zoom="p1" data-card="p1">
-        <!-- corpo principal -->
-        <rect x="52" y="268" width="130" height="115" fill="#c0281e" stroke="#0d0f1a" stroke-width="1.5"/>
-        <!-- cabeçalho neon -->
-        <rect x="52" y="268" width="130" height="18" fill="#0d0f1a"/>
-        <text x="117" y="280" text-anchor="middle" fill="#f0b930" font-family="'Bebas Neue',sans-serif"
-          font-size="12" letter-spacing="0.4em" class="blk" filter="url(#glow)">HULK</text>
-        <!-- grade de tweeters (linha superior) -->
-        <g fill="#0d0f1a">
-          <circle cx="66" cy="297" r="5.5"/>
-          <circle cx="83" cy="297" r="5.5"/>
-          <circle cx="100" cy="297" r="5.5"/>
-          <circle cx="117" cy="297" r="5.5"/>
-          <circle cx="134" cy="297" r="5.5"/>
-          <circle cx="151" cy="297" r="5.5"/>
-          <circle cx="168" cy="297" r="5.5"/>
+        <g fill="#f5ede0">
+          <circle cx="38" cy="32" r="1.2" class="twk"/>
+          <circle cx="95" cy="18" r="1"/>
+          <circle cx="162" cy="45" r="1.4" class="twk2"/>
+          <circle cx="228" cy="25" r="1"/>
+          <circle cx="295" cy="52" r="1.1"/>
+          <circle cx="368" cy="15" r="1.2" class="twk"/>
+          <circle cx="442" cy="40" r="1.3" class="twk2"/>
+          <circle cx="505" cy="20" r="1"/>
+          <circle cx="568" cy="42" r="1.2" class="twk"/>
+          <circle cx="710" cy="28" r="1.1" class="twk2"/>
+          <circle cx="18" cy="85" r="1.1"/>
+          <circle cx="730" cy="55" r="1.3" class="twk"/>
+          <circle cx="265" cy="100" r="1"/>
+          <circle cx="138" cy="112" r="1.1" class="twk"/>
+          <circle cx="580" cy="90" r="1"/>
         </g>
-        <!-- médios (drivers) -->
-        <g fill="#0d0f1a">
-          <circle cx="76" cy="317" r="9"/> <circle cx="76" cy="317" r="3.5" fill="#c8332a"/>
-          <circle cx="117" cy="317" r="9"/> <circle cx="117" cy="317" r="3.5" fill="#c8332a"/>
-          <circle cx="158" cy="317" r="9"/> <circle cx="158" cy="317" r="3.5" fill="#c8332a"/>
-        </g>
-        <!-- subwoofers (4x18") -->
-        <g fill="#0d0f1a">
-          <rect x="56" y="330" width="26" height="26" class="shk"/>
-          <circle cx="69" cy="343" r="9" fill="#2a3070"/>
-          <circle cx="69" cy="343" r="4" fill="#0d0f1a"/>
-          <rect x="86" y="330" width="26" height="26" class="shk"/>
-          <circle cx="99" cy="343" r="9" fill="#2a3070"/>
-          <circle cx="99" cy="343" r="4" fill="#0d0f1a"/>
-          <rect x="116" y="330" width="26" height="26" class="shk"/>
-          <circle cx="129" cy="343" r="9" fill="#2a3070"/>
-          <circle cx="129" cy="343" r="4" fill="#0d0f1a"/>
-          <rect x="146" y="330" width="26" height="26" class="shk"/>
-          <circle cx="159" cy="343" r="9" fill="#2a3070"/>
-          <circle cx="159" cy="343" r="4" fill="#0d0f1a"/>
-        </g>
-        <!-- caixas duto (parte inferior) -->
-        <rect x="52" y="358" width="130" height="14" fill="#0d0f1a"/>
-        <g fill="#1a1d2e">
-          <circle cx="70" cy="383" r="10"/>
-          <circle cx="100" cy="383" r="10"/>
-          <circle cx="135" cy="383" r="10"/>
-          <circle cx="165" cy="383" r="10"/>
-        </g>
-        <!-- rodapé / caixas graves baixas -->
-        <rect x="42" y="372" width="148" height="12" fill="#0d0f1a"/>
-        <!-- ring hover -->
-        <rect x="44" y="262" width="144" height="128" fill="none"
-          stroke="#f0b930" stroke-width="1.8" class="ring" rx="2"/>
-      </g>
 
-      <!-- Hotspots internos P1 -->
-      <g class="hot in-p1" data-card="p1-letrero"><rect x="52" y="268" width="130" height="18" fill="transparent"/></g>
-      <g class="hot in-p1" data-card="p1-tweet"><rect x="52" y="286" width="130" height="20" fill="transparent"/></g>
-      <g class="hot in-p1" data-card="p1-mid"><rect x="54" y="308" width="126" height="22" fill="transparent"/></g>
-      <g class="hot in-p1" data-card="p1-sub"><rect x="54" y="328" width="126" height="30" fill="transparent"/></g>
-      <g class="hot in-p1" data-card="p1-dutos"><rect x="42" y="358" width="148" height="28" fill="transparent"/></g>
+        <ellipse cx="80" cy="420" rx="120" ry="30" fill="#2a3055" opacity=".08" class="fog"/>
+        <ellipse cx="680" cy="430" rx="100" ry="25" fill="#3a2055" opacity=".07" class="fog2"/>
+        <ellipse cx="380" cy="480" rx="200" ry="20" fill="#1a2540" opacity=".1" class="fog3"/>
 
-      <!-- ░░░ PAREDÃO P3 — PAULILO (direito) ░░░ -->
-      <ellipse cx="502" cy="400" rx="75" ry="10" fill="#000" opacity=".5"/>
-      <g class="hot in-overview" data-zoom="p3" data-card="p3">
-        <rect x="438" y="268" width="138" height="115" fill="#b83068" stroke="#0d0f1a" stroke-width="1.5"/>
-        <rect x="438" y="268" width="138" height="18" fill="#0d0f1a"/>
-        <text x="507" y="280" text-anchor="middle" fill="#f0b930" font-family="'Bebas Neue',sans-serif"
-          font-size="12" letter-spacing="0.3em" filter="url(#glow)">PAULILO</text>
-        <!-- bandeira arco-íris -->
+        <g fill="#181b2a" opacity=".9">
+          <rect x="0" y="158" width="22" height="37"/>
+          <polygon points="0,158 11,148 22,158"/>
+          <rect x="22" y="150" width="26" height="45"/>
+          <polygon points="22,150 35,138 48,150"/>
+          <rect x="48" y="162" width="38" height="33"/>
+          <polygon points="48,162 67,150 86,162"/>
+          <rect x="86" y="155" width="32" height="40"/>
+          <polygon points="86,155 102,143 118,155"/>
+          <rect x="118" y="160" width="28" height="35"/>
+          <rect x="146" y="152" width="32" height="43"/>
+          <polygon points="146,152 162,140 178,152"/>
+          <rect x="178" y="165" width="36" height="30"/>
+          <rect x="214" y="155" width="30" height="40"/>
+          <polygon points="214,155 229,145 244,155"/>
+          <rect x="244" y="162" width="34" height="33"/>
+          <rect x="278" y="150" width="28" height="45"/>
+          <polygon points="278,150 292,138 306,150"/>
+          <rect x="306" y="158" width="32" height="37"/>
+          <rect x="338" y="162" width="36" height="33"/>
+          <polygon points="338,162 356,150 374,162"/>
+          <rect x="374" y="155" width="30" height="40"/>
+          <rect x="404" y="162" width="34" height="33"/>
+          <polygon points="404,162 421,150 438,162"/>
+          <rect x="438" y="155" width="28" height="40"/>
+          <rect x="466" y="160" width="36" height="35"/>
+          <polygon points="466,160 484,148 502,160"/>
+          <rect x="502" y="154" width="30" height="41"/>
+          <rect x="532" y="162" width="34" height="33"/>
+          <polygon points="532,162 549,150 566,162"/>
+          <rect x="566" y="155" width="30" height="40"/>
+          <rect x="596" y="162" width="36" height="33"/>
+          <rect x="632" y="150" width="32" height="45"/>
+          <polygon points="632,150 648,138 664,150"/>
+          <rect x="664" y="158" width="40" height="37"/>
+          <polygon points="664,158 684,145 704,158"/>
+          <rect x="704" y="162" width="56" height="33"/>
+        </g>
+
+        <g fill="#f0b930" opacity=".35" class="twk">
+          <rect x="8" y="167" width="2" height="3"/><rect x="30" y="158" width="2" height="3"/><rect x="55" y="168" width="2" height="3"/>
+          <rect x="96" y="162" width="2" height="3"/><rect x="128" y="165" width="2" height="3"/><rect x="160" y="160" width="2" height="3"/>
+          <rect x="196" y="172" width="2" height="3"/><rect x="224" y="163" width="2" height="3"/><rect x="258" y="168" width="2" height="3"/>
+          <rect x="292" y="156" width="2" height="3"/><rect x="344" y="167" width="2" height="3"/><rect x="382" y="162" width="2" height="3"/>
+          <rect x="415" y="168" width="2" height="3"/><rect x="450" y="162" width="2" height="3"/><rect x="478" y="166" width="2" height="3"/>
+          <rect x="512" y="161" width="2" height="3"/><rect x="547" y="167" width="2" height="3"/><rect x="576" y="162" width="2" height="3"/>
+          <rect x="610" y="168" width="2" height="3"/><rect x="645" y="156" width="2" height="3"/><rect x="678" y="163" width="2" height="3"/>
+        </g>
+
+        <g stroke="#0d0f1a" stroke-width="0.8" fill="none" opacity=".7">
+          <path d="M 0 195 Q 180 202 360 196 T 760 195"/>
+          <path d="M 0 200 Q 180 208 360 202 T 760 200"/>
+          <path d="M 50 195 Q 200 210 380 200 T 760 195"/>
+        </g>
         <g>
-          <rect x="438" y="286" width="138" height="4" fill="#c8332a"/>
-          <rect x="438" y="290" width="138" height="4" fill="#d47010"/>
-          <rect x="438" y="294" width="138" height="4" fill="#d8c020"/>
-          <rect x="438" y="298" width="138" height="4" fill="#2e7858"/>
-          <rect x="438" y="302" width="138" height="4" fill="#2a4280"/>
-          <rect x="438" y="306" width="138" height="4" fill="#6a2888"/>
+          <rect x="128" y="185" width="2.5" height="210" fill="#0d0f1a"/>
+          <circle cx="129" cy="185" r="5" fill="#f0b930" filter="url(#glow)" class="twk"/>
+          <rect x="404" y="185" width="2.5" height="210" fill="#0d0f1a"/>
+          <circle cx="405" cy="185" r="5" fill="#f0b930" filter="url(#glow)"/>
+          <rect x="616" y="185" width="2.5" height="210" fill="#0d0f1a"/>
+          <circle cx="617" cy="185" r="5" fill="#f0b930" filter="url(#glow)" class="twk2"/>
         </g>
-        <!-- médios com cores LGBTQ+ -->
-        <g fill="#0d0f1a">
-          <circle cx="460" cy="324" r="8"/> <circle cx="460" cy="324" r="3" fill="#d4427a"/>
-          <circle cx="490" cy="324" r="8"/> <circle cx="490" cy="324" r="3" fill="#d4427a"/>
-          <circle cx="520" cy="324" r="8"/> <circle cx="520" cy="324" r="3" fill="#d4427a"/>
-          <circle cx="550" cy="324" r="8"/> <circle cx="550" cy="324" r="3" fill="#d4427a"/>
+
+        <rect x="0" y="380" width="760" height="140" fill="url(#chaoGrad)"/>
+        <rect x="0" y="380" width="760" height="18" fill="#111420"/>
+        <rect x="0" y="396" width="760" height="2" fill="#0a0c18"/>
+
+        <g><rect x="0" y="210" width="62" height="170" fill="#2e6850"/><polygon points="0,210 31,192 62,210" fill="#1a4030"/><rect x="6" y="228" width="12" height="14" fill="#141a2e"/><rect x="22" y="228" width="12" height="14" fill="#141a2e"/><rect x="40" y="228" width="12" height="14" fill="#141a2e"/><rect x="12" y="254" width="18" height="28" fill="#0d0f1a"/><rect x="0" y="375" width="62" height="5" fill="#000" opacity=".3"/></g>
+        <g><rect x="62" y="216" width="58" height="164" fill="#d88880"/><polygon points="62,216 91,198 120,216" fill="#906058"/><rect x="68" y="232" width="10" height="13" fill="#141a2e"/><rect x="84" y="232" width="10" height="13" fill="#141a2e"/><rect x="100" y="232" width="10" height="13" fill="#141a2e"/><rect x="70" y="258" width="16" height="22" fill="#141a2e"/><rect x="62" y="373" width="58" height="5" fill="#000" opacity=".3"/></g>
+        <g><rect x="170" y="204" width="58" height="176" fill="#d8a828"/><polygon points="170,204 199,188 228,204" fill="#886810"/><rect x="176" y="220" width="10" height="13" fill="#141a2e"/><rect x="194" y="220" width="10" height="13" fill="#141a2e"/><rect x="210" y="220" width="10" height="13" fill="#141a2e"/><rect x="183" y="246" width="16" height="30" fill="#0d0f1a"/><rect x="170" y="373" width="58" height="5" fill="#000" opacity=".3"/></g>
+        <g><rect x="228" y="212" width="72" height="168" fill="#e8dcc8"/><polygon points="228,212 264,192 300,212" fill="#a08870"/><rect x="236" y="228" width="12" height="14" fill="#141a2e"/><rect x="256" y="228" width="12" height="14" fill="#141a2e"/><rect x="276" y="228" width="12" height="14" fill="#141a2e"/><rect x="244" y="255" width="12" height="25" fill="#141a2e"/><rect x="268" y="255" width="12" height="25" fill="#141a2e"/><rect x="228" y="373" width="72" height="5" fill="#000" opacity=".3"/></g>
+        <g><rect x="300" y="208" width="62" height="172" fill="#b02820"/><polygon points="300,208 331,190 362,208" fill="#701810"/><rect x="308" y="224" width="10" height="13" fill="#141a2e"/><rect x="326" y="224" width="10" height="13" fill="#141a2e"/><rect x="344" y="224" width="10" height="13" fill="#141a2e"/><rect x="318" y="250" width="16" height="30" fill="#0d0f1a"/><rect x="300" y="373" width="62" height="5" fill="#000" opacity=".3"/></g>
+        <g><rect x="580" y="210" width="60" height="170" fill="#2a3870"/><polygon points="580,210 610,192 640,210" fill="#181e46"/><rect x="586" y="226" width="10" height="13" fill="#141a2e"/><rect x="603" y="226" width="10" height="13" fill="#141a2e"/><rect x="620" y="226" width="10" height="13" fill="#141a2e"/><rect x="596" y="250" width="14" height="30" fill="#0d0f1a"/><rect x="580" y="373" width="60" height="5" fill="#000" opacity=".3"/></g>
+        <g><rect x="640" y="215" width="48" height="165" fill="#c47028"/><polygon points="640,215 664,198 688,215" fill="#7a4010"/><rect x="647" y="230" width="9" height="12" fill="#141a2e"/><rect x="663" y="230" width="9" height="12" fill="#141a2e"/><rect x="655" y="255" width="14" height="25" fill="#0d0f1a"/><rect x="640" y="373" width="48" height="5" fill="#000" opacity=".3"/></g>
+        <g><rect x="688" y="208" width="72" height="172" fill="#2e6850"/><polygon points="688,208 724,190 760,208" fill="#1a4030"/><rect x="695" y="225" width="11" height="14" fill="#141a2e"/><rect x="714" y="225" width="11" height="14" fill="#141a2e"/><rect x="733" y="225" width="11" height="14" fill="#141a2e"/><rect x="704" y="252" width="16" height="28" fill="#0d0f1a"/><rect x="688" y="373" width="72" height="5" fill="#000" opacity=".3"/></g>
+
+        <ellipse cx="116" cy="400" rx="75" ry="10" fill="#000" opacity=".5"/>
+        <g>
+          <rect x="52" y="268" width="130" height="115" fill="#c0281e" stroke="#0d0f1a" stroke-width="1.5"/>
+          <rect x="52" y="268" width="130" height="18" fill="#0d0f1a"/>
+          <text x="117" y="280" text-anchor="middle" fill="#f0b930" font-family="'Bebas Neue',sans-serif" font-size="12" letter-spacing="0.4em" class="blk" filter="url(#glow)">HULK</text>
+          <g fill="#0d0f1a"><circle cx="66" cy="297" r="5.5"/><circle cx="83" cy="297" r="5.5"/><circle cx="100" cy="297" r="5.5"/><circle cx="117" cy="297" r="5.5"/><circle cx="134" cy="297" r="5.5"/><circle cx="151" cy="297" r="5.5"/><circle cx="168" cy="297" r="5.5"/></g>
+          <g fill="#0d0f1a"><circle cx="76" cy="317" r="9"/> <circle cx="76" cy="317" r="3.5" fill="#c8332a"/><circle cx="117" cy="317" r="9"/> <circle cx="117" cy="317" r="3.5" fill="#c8332a"/><circle cx="158" cy="317" r="9"/> <circle cx="158" cy="317" r="3.5" fill="#c8332a"/></g>
+          <g fill="#0d0f1a"><rect x="56" y="330" width="26" height="26" class="shk"/><circle cx="69" cy="343" r="9" fill="#2a3070"/><circle cx="69" cy="343" r="4" fill="#0d0f1a"/><rect x="86" y="330" width="26" height="26" class="shk"/><circle cx="99" cy="343" r="9" fill="#2a3070"/><circle cx="99" cy="343" r="4" fill="#0d0f1a"/><rect x="116" y="330" width="26" height="26" class="shk"/><circle cx="129" cy="343" r="9" fill="#2a3070"/><circle cx="129" cy="343" r="4" fill="#0d0f1a"/><rect x="146" y="330" width="26" height="26" class="shk"/><circle cx="159" cy="343" r="9" fill="#2a3070"/><circle cx="159" cy="343" r="4" fill="#0d0f1a"/></g>
+          <rect x="52" y="358" width="130" height="14" fill="#0d0f1a"/>
+          <g fill="#1a1d2e"><circle cx="70" cy="383" r="10"/><circle cx="100" cy="383" r="10"/><circle cx="135" cy="383" r="10"/><circle cx="165" cy="383" r="10"/></g>
+          <rect x="42" y="372" width="148" height="12" fill="#0d0f1a"/>
         </g>
-        <!-- subs -->
-        <g fill="#0d0f1a">
-          <rect x="440" y="337" width="28" height="28" class="shk"/>
-          <circle cx="454" cy="351" r="9" fill="#5a1870"/>
-          <circle cx="454" cy="351" r="4" fill="#0d0f1a"/>
-          <rect x="473" y="337" width="28" height="28" class="shk"/>
-          <circle cx="487" cy="351" r="9" fill="#5a1870"/>
-          <circle cx="487" cy="351" r="4" fill="#0d0f1a"/>
-          <rect x="506" y="337" width="28" height="28" class="shk"/>
-          <circle cx="520" cy="351" r="9" fill="#5a1870"/>
-          <circle cx="520" cy="351" r="4" fill="#0d0f1a"/>
-          <rect x="539" y="337" width="28" height="28" class="shk"/>
-          <circle cx="553" cy="351" r="9" fill="#5a1870"/>
-          <circle cx="553" cy="351" r="4" fill="#0d0f1a"/>
+
+        <ellipse cx="502" cy="400" rx="75" ry="10" fill="#000" opacity=".5"/>
+        <g>
+          <rect x="438" y="268" width="138" height="115" fill="#b83068" stroke="#0d0f1a" stroke-width="1.5"/>
+          <rect x="438" y="268" width="138" height="18" fill="#0d0f1a"/>
+          <text x="507" y="280" text-anchor="middle" fill="#f0b930" font-family="'Bebas Neue',sans-serif" font-size="12" letter-spacing="0.3em" filter="url(#glow)">PAULILO</text>
+          <g>
+            <rect x="438" y="286" width="138" height="4" fill="#c8332a"/>
+            <rect x="438" y="290" width="138" height="4" fill="#d47010"/>
+            <rect x="438" y="294" width="138" height="4" fill="#d8c020"/>
+            <rect x="438" y="298" width="138" height="4" fill="#2e7858"/>
+            <rect x="438" y="302" width="138" height="4" fill="#2a4280"/>
+            <rect x="438" y="306" width="138" height="4" fill="#6a2888"/>
+          </g>
+          <g fill="#0d0f1a">
+            <circle cx="460" cy="324" r="8"/> <circle cx="460" cy="324" r="3" fill="#d4427a"/>
+            <circle cx="490" cy="324" r="8"/> <circle cx="490" cy="324" r="3" fill="#d4427a"/>
+            <circle cx="520" cy="324" r="8"/> <circle cx="520" cy="324" r="3" fill="#d4427a"/>
+            <circle cx="550" cy="324" r="8"/> <circle cx="550" cy="324" r="3" fill="#d4427a"/>
+          </g>
+          <g fill="#0d0f1a">
+            <rect x="440" y="337" width="28" height="28" class="shk"/><circle cx="454" cy="351" r="9" fill="#5a1870"/><circle cx="454" cy="351" r="4" fill="#0d0f1a"/>
+            <rect x="473" y="337" width="28" height="28" class="shk"/><circle cx="487" cy="351" r="9" fill="#5a1870"/><circle cx="487" cy="351" r="4" fill="#0d0f1a"/>
+            <rect x="506" y="337" width="28" height="28" class="shk"/><circle cx="520" cy="351" r="9" fill="#5a1870"/><circle cx="520" cy="351" r="4" fill="#0d0f1a"/>
+            <rect x="539" y="337" width="28" height="28" class="shk"/><circle cx="553" cy="351" r="9" fill="#5a1870"/><circle cx="553" cy="351" r="4" fill="#0d0f1a"/>
+          </g>
+          <rect x="428" y="367" width="158" height="14" fill="#0d0f1a"/>
+          <g fill="#1a1020"><circle cx="458" cy="390" r="10"/><circle cx="492" cy="390" r="10"/><circle cx="528" cy="390" r="10"/><circle cx="558" cy="390" r="10"/></g>
         </g>
-        <rect x="428" y="367" width="158" height="14" fill="#0d0f1a"/>
-        <g fill="#1a1020">
-          <circle cx="458" cy="390" r="10"/>
-          <circle cx="492" cy="390" r="10"/>
-          <circle cx="528" cy="390" r="10"/>
-          <circle cx="558" cy="390" r="10"/>
+
+        <ellipse cx="318" cy="475" rx="60" ry="7" fill="#000" opacity=".5"/>
+        <g>
+          <rect x="222" y="428" width="152" height="34" fill="#243060" stroke="#0d0f1a" stroke-width="1"/>
+          <polygon points="234,428 252,408 346,408 364,428" fill="#243060" stroke="#0d0f1a" stroke-width="1"/>
+          <rect x="254" y="414" width="88" height="13" fill="#0d0f1a"/>
+          <rect x="224" y="440" width="8" height="10" fill="#d8d070" class="twk"/>
+          <rect x="364" y="440" width="8" height="10" fill="#c83020" class="blk"/>
+          <rect x="310" y="428" width="62" height="36" fill="#0d0f1a"/>
+          <circle cx="336" cy="446" r="14" fill="#141820" stroke="#c8332a" stroke-width="2" class="shk"/>
+          <circle cx="336" cy="446" r="7" fill="#c8332a"/>
+          <circle cx="354" cy="446" r="10" fill="#141820" stroke="#f0b930" stroke-width="1.5"/>
+          <circle cx="354" cy="446" r="4" fill="#f0b930"/>
+          <circle cx="252" cy="465" r="13" fill="#0d0f1a" stroke="#2a3070" stroke-width="2"/>
+          <circle cx="252" cy="465" r="6" fill="#141820"/>
+          <circle cx="342" cy="465" r="13" fill="#0d0f1a" stroke="#2a3070" stroke-width="2"/>
+          <circle cx="342" cy="465" r="6" fill="#141820"/>
         </g>
-        <rect x="430" y="262" width="148" height="128" fill="none"
-          stroke="#f0b930" stroke-width="1.8" class="ring" rx="2"/>
-      </g>
 
-      <!-- Hotspots internos P3 -->
-      <g class="hot in-p3" data-card="p3-letrero"><rect x="438" y="268" width="138" height="18" fill="transparent"/></g>
-      <g class="hot in-p3" data-card="p3-bandeira"><rect x="438" y="286" width="138" height="24" fill="transparent"/></g>
-      <g class="hot in-p3" data-card="p3-voz"><rect x="440" y="312" width="136" height="26" fill="transparent"/></g>
-      <g class="hot in-p3" data-card="p3-shake"><rect x="438" y="337" width="138" height="30" fill="transparent"/></g>
-
-      <!-- ░░░ PAREDÃO P2 — SOM DE MALA (centro, menor) ░░░ -->
-      <ellipse cx="318" cy="475" rx="60" ry="7" fill="#000" opacity=".5"/>
-      <g class="hot in-overview" data-zoom="p2" data-card="p2">
-        <!-- carro -->
-        <rect x="222" y="428" width="152" height="34" fill="#243060" stroke="#0d0f1a" stroke-width="1"/>
-        <polygon points="234,428 252,408 346,408 364,428" fill="#243060" stroke="#0d0f1a" stroke-width="1"/>
-        <!-- para-brisa -->
-        <rect x="254" y="414" width="88" height="13" fill="#0d0f1a"/>
-        <!-- faróis -->
-        <rect x="224" y="440" width="8" height="10" fill="#d8d070" class="twk"/>
-        <rect x="364" y="440" width="8" height="10" fill="#c83020" class="blk"/>
-        <!-- porta-malas aberto -->
-        <rect x="310" y="428" width="62" height="36" fill="#0d0f1a"/>
-        <!-- subwoofer no porta-malas -->
-        <circle cx="336" cy="446" r="14" fill="#141820" stroke="#c8332a" stroke-width="2" class="shk"/>
-        <circle cx="336" cy="446" r="7" fill="#c8332a"/>
-        <circle cx="354" cy="446" r="10" fill="#141820" stroke="#f0b930" stroke-width="1.5"/>
-        <circle cx="354" cy="446" r="4" fill="#f0b930"/>
-        <!-- rodas -->
-        <circle cx="252" cy="465" r="13" fill="#0d0f1a" stroke="#2a3070" stroke-width="2"/>
-        <circle cx="252" cy="465" r="6" fill="#141820"/>
-        <circle cx="342" cy="465" r="13" fill="#0d0f1a" stroke="#2a3070" stroke-width="2"/>
-        <circle cx="342" cy="465" r="6" fill="#141820"/>
-        <!-- ring -->
-        <rect x="214" y="402" width="168" height="72" fill="none"
-          stroke="#f0b930" stroke-width="1.8" class="ring" rx="2"/>
-      </g>
-
-      <!-- Hotspots internos P2 -->
-      <g class="hot in-p2" data-card="p2-cabine"><rect x="254" y="406" width="88" height="24" fill="transparent"/></g>
-      <g class="hot in-p2" data-card="p2-sub"><rect x="310" y="428" width="66" height="36" fill="transparent"/></g>
-      <g class="hot in-p2" data-card="p2-corpo"><rect x="222" y="428" width="90" height="34" fill="transparent"/></g>
-
-      <!-- ░░░ ONDAS SONORAS (default off, ativadas por modo) ░░░ -->
-      <!-- ondas P1 (vermelho) -->
-      <g class="onda onda-grave" opacity=".7">
-        <circle cx="117" cy="335" fill="none" stroke="#c8332a" stroke-width="0.8" class="pp-w1">
-          <animate attributeName="r" from="8" to="110" dur="2.4s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.4s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="117" cy="335" fill="none" stroke="#c8332a" stroke-width="0.8">
-          <animate attributeName="r" from="8" to="110" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="117" cy="335" fill="none" stroke="#c8332a" stroke-width="0.8">
-          <animate attributeName="r" from="8" to="110" dur="2.4s" begin="1.6s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.4s" begin="1.6s" repeatCount="indefinite"/>
-        </circle>
-      </g>
-      <!-- ondas P1 agudo (menor raio) -->
-      <g class="onda onda-agudo" opacity=".6">
-        <circle cx="117" cy="335" fill="none" stroke="#f0a030" stroke-width="0.6">
-          <animate attributeName="r" from="4" to="45" dur="1.2s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.8" to="0" dur="1.2s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="117" cy="335" fill="none" stroke="#f0a030" stroke-width="0.6">
-          <animate attributeName="r" from="4" to="45" dur="1.2s" begin="0.4s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.8" to="0" dur="1.2s" begin="0.4s" repeatCount="indefinite"/>
-        </circle>
-      </g>
-      <!-- ondas P2 (azul) -->
-      <g class="onda onda-grave" opacity=".6">
-        <circle cx="318" cy="450" fill="none" stroke="#4060b8" stroke-width="0.8">
-          <animate attributeName="r" from="6" to="70" dur="2.6s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.8" to="0" dur="2.6s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="318" cy="450" fill="none" stroke="#4060b8" stroke-width="0.8">
-          <animate attributeName="r" from="6" to="70" dur="2.6s" begin="0.87s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.8" to="0" dur="2.6s" begin="0.87s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="318" cy="450" fill="none" stroke="#4060b8" stroke-width="0.8">
-          <animate attributeName="r" from="6" to="70" dur="2.6s" begin="1.74s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.8" to="0" dur="2.6s" begin="1.74s" repeatCount="indefinite"/>
-        </circle>
-      </g>
-      <!-- ondas P3 (rosa) -->
-      <g class="onda onda-grave" opacity=".7">
-        <circle cx="507" cy="335" fill="none" stroke="#d4427a" stroke-width="0.8">
-          <animate attributeName="r" from="8" to="115" dur="2.2s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.2s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="507" cy="335" fill="none" stroke="#d4427a" stroke-width="0.8">
-          <animate attributeName="r" from="8" to="115" dur="2.2s" begin="0.73s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.2s" begin="0.73s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="507" cy="335" fill="none" stroke="#d4427a" stroke-width="0.8">
-          <animate attributeName="r" from="8" to="115" dur="2.2s" begin="1.46s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.2s" begin="1.46s" repeatCount="indefinite"/>
-        </circle>
-      </g>
-      <!-- ondas P3 agudo -->
-      <g class="onda onda-agudo" opacity=".55">
-        <circle cx="507" cy="335" fill="none" stroke="#e890c8" stroke-width="0.6">
-          <animate attributeName="r" from="4" to="42" dur="1.1s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.8" to="0" dur="1.1s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="507" cy="335" fill="none" stroke="#e890c8" stroke-width="0.6">
-          <animate attributeName="r" from="4" to="42" dur="1.1s" begin="0.37s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.8" to="0" dur="1.1s" begin="0.37s" repeatCount="indefinite"/>
-        </circle>
-      </g>
-
-      <!-- ░░░ VISÃO DA POLÍCIA — overlay azul, destaca paredões com caixinhas de atenção ░░░ -->
-      <g class="visao-policia">
-        <rect width="760" height="520" fill="#0a1830" opacity=".45"/>
-        <!-- "alvo" no P1 -->
-        <rect x="44" y="262" width="144" height="128" fill="none" stroke="#4080e0" stroke-width="1.5" stroke-dasharray="6 4"/>
-        <rect x="44" y="262" width="144" height="128" fill="#2040a0" opacity=".08"/>
-        <text x="117" y="256" text-anchor="middle" fill="#6090f0" font-family="'Space Mono',monospace" font-size="8" letter-spacing="0.2em">110dB · IRREGULAR</text>
-        <!-- "alvo" no P3 -->
-        <rect x="430" y="262" width="148" height="128" fill="none" stroke="#4080e0" stroke-width="1.5" stroke-dasharray="6 4"/>
-        <rect x="430" y="262" width="148" height="128" fill="#2040a0" opacity=".08"/>
-        <text x="507" y="256" text-anchor="middle" fill="#6090f0" font-family="'Space Mono',monospace" font-size="8" letter-spacing="0.2em">108dB · IRREGULAR</text>
-        <!-- "alvo" no P2 -->
-        <rect x="214" y="402" width="168" height="72" fill="none" stroke="#4080e0" stroke-width="1.2" stroke-dasharray="5 4"/>
-        <text x="298" y="398" text-anchor="middle" fill="#6090f0" font-family="'Space Mono',monospace" font-size="7" letter-spacing="0.15em">98dB · IRREGULAR</text>
-        <!-- raio de ação da viatura -->
-        <circle cx="710" cy="488" fill="none" stroke="#e8e060" stroke-width="0.8" opacity=".5">
-          <animate attributeName="r" from="20" to="180" dur="3s" repeatCount="indefinite"/>
-          <animate attributeName="stroke-opacity" from="0.6" to="0" dur="3s" repeatCount="indefinite"/>
-        </circle>
-        <!-- texto lei -->
-        <text x="380" y="500" text-anchor="middle" fill="#4070c0" opacity=".7" font-family="'Space Mono',monospace" font-size="8" letter-spacing="0.18em">LEI 5.354/98 · LIMITE 70dB</text>
-      </g>
-
-      <!-- ░░░ VISÃO DO VENDEDOR — destaca economia informal ░░░ -->
-      <g class="visao-vendedor">
-        <rect width="760" height="520" fill="#0a1808" opacity=".38"/>
-        <!-- fluxo de dinheiro (setas) -->
-        <path d="M 660 460 Q 580 430 520 410" fill="none" stroke="#40c870" stroke-width="1.2" stroke-dasharray="4 3" opacity=".7"/>
-        <path d="M 660 460 Q 620 500 560 510" fill="none" stroke="#40c870" stroke-width="1.2" stroke-dasharray="4 3" opacity=".7"/>
-        <path d="M 660 460 Q 700 440 740 460" fill="none" stroke="#40c870" stroke-width="1.2" stroke-dasharray="4 3" opacity=".7"/>
-        <!-- label vendedora -->
-        <rect x="628" y="438" width="80" height="28" fill="#0a1808" opacity=".7" rx="2"/>
-        <text x="668" y="450" text-anchor="middle" fill="#50d880" font-family="'Space Mono',monospace" font-size="7.5" letter-spacing="0.15em">R$280–400</text>
-        <text x="668" y="461" text-anchor="middle" fill="#40a860" font-family="'Space Mono',monospace" font-size="7" letter-spacing="0.1em">por noite</text>
-        <!-- destaque outros trabalhadores -->
-        <circle cx="150" cy="488" r="18" fill="none" stroke="#40c870" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="150" y="508" text-anchor="middle" fill="#40c870" font-family="'Space Mono',monospace" font-size="7">cerveja</text>
-        <circle cx="318" cy="460" r="22" fill="none" stroke="#40c870" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="318" y="480" text-anchor="middle" fill="#40c870" font-family="'Space Mono',monospace" font-size="7">som de mala</text>
-        <!-- texto total -->
-        <text x="380" y="500" text-anchor="middle" fill="#30a850" opacity=".8" font-family="'Space Mono',monospace" font-size="8" letter-spacing="0.15em">economia invisível · sem CNPJ · sem nota</text>
-      </g>
-
-      <!-- ░░░ VISÃO DA FREQUENTADORA — destaca socialização, corpos, prazer ░░░ -->
-      <g class="visao-frequentadora">
-        <rect width="760" height="520" fill="#100818" opacity=".35"/>
-        <!-- halo de conforto no P3 -->
-        <circle cx="507" cy="335" r="100" fill="#d4427a" opacity=".06"/>
-        <rect x="430" y="262" width="148" height="128" fill="none" stroke="#d4427a" stroke-width="1.2" opacity=".5"/>
-        <text x="507" y="256" text-anchor="middle" fill="#e880b0" font-family="'IBM Plex Sans',sans-serif" font-size="9" font-style="italic">aqui posso ser quem sou</text>
-        <!-- destaque pessoas dançando -->
-        <circle cx="180" cy="475" r="16" fill="none" stroke="#f0a8c8" stroke-width="1" opacity=".6"/>
-        <circle cx="380" cy="470" r="16" fill="none" stroke="#f0a8c8" stroke-width="1" opacity=".6"/>
-        <circle cx="460" cy="475" r="16" fill="none" stroke="#f0a8c8" stroke-width="1" opacity=".6"/>
-        <circle cx="510" cy="470" r="16" fill="none" stroke="#f0a8c8" stroke-width="1" opacity=".6"/>
-        <!-- texto rua livre -->
-        <text x="380" y="502" text-anchor="middle" fill="#c06090" opacity=".8" font-family="'IBM Plex Sans',sans-serif" font-size="9" font-style="italic" letter-spacing="0.1em">a rua é nossa · entrada gratuita · sem porteiro</text>
-      </g>
-
-      <!-- ░░░ PERSONAGENS (em cima das camadas, para ter z-order correto) ░░░ -->
-
-      <!-- Lekinho (cantor) — com microfone, dançando -->
-      <g class="hot in-overview d1" data-card="lekinho" transform="translate(198 365)">
-        <circle cx="0" cy="0" r="9" fill="#7a4818"/>
-        <rect x="-5" y="-2" width="10" height="5" fill="#0d0f1a"/>
-        <rect x="-1" y="-1" width="2" height="2" fill="#f0b930"/>
-        <rect x="-3" y="-1" width="2" height="2" fill="#f0b930"/>
-        <rect x="-8" y="8" width="16" height="22" fill="#e8dcc8"/>
-        <rect x="-2" y="13" width="4" height="2" fill="#f0b930"/>
-        <rect x="-4" y="30" width="6" height="16" fill="#2a4280"/>
-        <rect x="2" y="30" width="6" height="16" fill="#2a4280"/>
-        <line x1="8" y1="14" x2="16" y2="5" stroke="#7a4818" stroke-width="3" stroke-linecap="round"/>
-        <rect x="14" y="1" width="4" height="9" fill="#0d0f1a"/>
-        <circle cx="16" cy="0" r="4" fill="#3a3f55"/>
-        <!-- sombra pé -->
-        <ellipse cx="0" cy="47" rx="8" ry="2.5" fill="#000" opacity=".4"/>
-        <circle cx="0" cy="0" r="24" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
-
-      <!-- Construtor -->
-      <g class="hot in-overview" data-card="construtor" transform="translate(42 378)">
-        <circle cx="0" cy="0" r="8" fill="#7a4818"/>
-        <rect x="-5" y="-5" width="10" height="3" fill="#c8332a"/>
-        <rect x="-7" y="6" width="14" height="20" fill="#2e7858"/>
-        <rect x="-4" y="26" width="5" height="14" fill="#0d0f1a"/>
-        <rect x="1" y="26" width="5" height="14" fill="#0d0f1a"/>
-        <line x1="7" y1="10" x2="16" y2="19" stroke="#7a4818" stroke-width="2.5" stroke-linecap="round"/>
-        <rect x="14" y="16" width="8" height="3" fill="#3a3f55"/>
-        <rect x="16" y="11" width="4" height="12" fill="#3a3f55"/>
-        <ellipse cx="0" cy="41" rx="7" ry="2" fill="#000" opacity=".4"/>
-        <circle cx="0" cy="0" r="22" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
-
-      <!-- Chacal (dono) -->
-      <g class="hot in-overview d2" data-card="chacal" transform="translate(268 468)">
-        <circle cx="0" cy="0" r="9" fill="#2e1e10"/>
-        <rect x="-8" y="-6" width="16" height="4" fill="#0d0f1a"/>
-        <rect x="-8" y="8" width="16" height="20" fill="#f0b930"/>
-        <rect x="-2" y="13" width="5" height="2" fill="#0d0f1a"/>
-        <rect x="-4" y="28" width="4" height="16" fill="#2a4280"/>
-        <rect x="2" y="28" width="4" height="16" fill="#2a4280"/>
-        <line x1="-8" y1="14" x2="-15" y2="9" stroke="#2e1e10" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="8" y1="14" x2="14" y2="22" stroke="#2e1e10" stroke-width="2.5" stroke-linecap="round"/>
-        <ellipse cx="0" cy="45" rx="8" ry="2" fill="#000" opacity=".4"/>
-        <circle cx="0" cy="0" r="24" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
-
-      <!-- Frequentadora -->
-      <g class="hot in-overview d4" data-card="frequentadora" transform="translate(388 470)">
-        <circle cx="0" cy="0" r="9" fill="#4a2810"/>
-        <path d="M -9 -5 Q -10 -12 -4 -12 Q 0 -14 4 -12 Q 10 -12 9 -5 L 9 0 L -9 0 Z" fill="#0d0f1a"/>
-        <rect x="-8" y="8" width="16" height="16" fill="#c8332a"/>
-        <rect x="-8" y="24" width="16" height="12" fill="#0d0f1a"/>
-        <rect x="-5" y="36" width="4" height="14" fill="#4a2810"/>
-        <rect x="1" y="36" width="4" height="14" fill="#4a2810"/>
-        <line x1="-8" y1="13" x2="-16" y2="5" stroke="#4a2810" stroke-width="3" stroke-linecap="round"/>
-        <line x1="8" y1="13" x2="16" y2="5" stroke="#4a2810" stroke-width="3" stroke-linecap="round"/>
-        <ellipse cx="0" cy="51" rx="8" ry="2" fill="#000" opacity=".4"/>
-        <circle cx="0" cy="0" r="24" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
-
-      <!-- Paulilo (produtora) -->
-      <g class="hot in-overview d3" data-card="paulilo" transform="translate(576 362)">
-        <circle cx="0" cy="0" r="9" fill="#906050"/>
-        <path d="M -10 -3 Q -10 -12 0 -14 Q 10 -12 10 -3 Q 8 5 0 6 Q -8 5 -10 -3 Z" fill="#c8332a"/>
-        <rect x="-8" y="8" width="16" height="20" fill="#6a2888"/>
-        <rect x="-8" y="11" width="16" height="4" fill="#f0b930"/>
-        <rect x="-4" y="28" width="5" height="16" fill="#0d0f1a"/>
-        <rect x="1" y="28" width="5" height="16" fill="#0d0f1a"/>
-        <line x1="-8" y1="14" x2="-16" y2="22" stroke="#906050" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="8" y1="14" x2="16" y2="22" stroke="#906050" stroke-width="2.5" stroke-linecap="round"/>
-        <ellipse cx="0" cy="45" rx="8" ry="2" fill="#000" opacity=".4"/>
-        <circle cx="0" cy="0" r="24" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
-
-      <!-- Tia do acarajé -->
-      <g class="hot in-overview" data-card="acaraje" transform="translate(640 470)">
-        <rect x="-24" y="0" width="48" height="20" fill="#e8dcc8"/>
-        <rect x="-24" y="0" width="48" height="4" fill="#c8332a"/>
-        <circle cx="-12" cy="12" r="4" fill="#c87018"/>
-        <circle cx="0" cy="12" r="4" fill="#c87018"/>
-        <circle cx="12" cy="12" r="4" fill="#c87018"/>
-        <g transform="translate(-34,-10)">
-          <circle cx="0" cy="0" r="8" fill="#4a2810"/>
-          <rect x="-6" y="-4" width="12" height="2" fill="#e8dcc8"/>
-          <rect x="-7" y="6" width="14" height="16" fill="#2e7858"/>
-          <rect x="-8" y="6" width="16" height="4" fill="#e8dcc8"/>
-          <rect x="-4" y="22" width="4" height="10" fill="#0d0f1a"/>
-          <rect x="1" y="22" width="4" height="10" fill="#0d0f1a"/>
+        <g class="onda onda-grave" opacity=".7">
+          <circle cx="117" cy="335" fill="none" stroke="#c8332a" stroke-width="0.8"><animate attributeName="r" from="8" to="110" dur="2.4s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.4s" repeatCount="indefinite"/></circle>
+          <circle cx="117" cy="335" fill="none" stroke="#c8332a" stroke-width="0.8"><animate attributeName="r" from="8" to="110" dur="2.4s" begin="0.8s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.4s" begin="0.8s" repeatCount="indefinite"/></circle>
         </g>
-        <ellipse cx="-12" cy="32" rx="12" ry="3" fill="#000" opacity=".3"/>
-        <rect x="-44" y="-22" width="72" height="48" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
-
-      <!-- Pesquisadores -->
-      <g class="hot in-overview" data-card="pesquisa" transform="translate(40 475)">
-        <circle cx="0" cy="0" r="5.5" fill="#4a3818"/>
-        <rect x="-4" y="5" width="8" height="12" fill="#3a3f55"/>
-        <rect x="-2.5" y="17" width="3" height="9" fill="#0d0f1a"/>
-        <rect x="0.5" y="17" width="3" height="9" fill="#0d0f1a"/>
-        <rect x="-7" y="-3" width="3.5" height="2" fill="#0d0f1a"/>
-        <rect x="3.5" y="-3" width="3.5" height="2" fill="#0d0f1a"/>
-        <!-- 2ª pessoa -->
-        <g transform="translate(14,-2)">
-          <circle cx="0" cy="0" r="5.5" fill="#8a5028"/>
-          <rect x="-4" y="5" width="8" height="12" fill="#c8332a"/>
-          <rect x="-2.5" y="17" width="3" height="9" fill="#0d0f1a"/>
-          <rect x="0.5" y="17" width="3" height="9" fill="#0d0f1a"/>
+        <g class="onda onda-agudo" opacity=".6">
+          <circle cx="117" cy="335" fill="none" stroke="#f0a030" stroke-width="0.6"><animate attributeName="r" from="4" to="45" dur="1.2s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" from="0.8" to="0" dur="1.2s" repeatCount="indefinite"/></circle>
         </g>
-        <rect x="-14" y="-12" width="54" height="42" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
+        <g class="onda onda-grave" opacity=".6">
+          <circle cx="318" cy="450" fill="none" stroke="#4060b8" stroke-width="0.8"><animate attributeName="r" from="6" to="70" dur="2.6s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" from="0.8" to="0" dur="2.6s" repeatCount="indefinite"/></circle>
+        </g>
+        <g class="onda onda-grave" opacity=".7">
+          <circle cx="507" cy="335" fill="none" stroke="#d4427a" stroke-width="0.8"><animate attributeName="r" from="8" to="115" dur="2.2s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" from="0.9" to="0" dur="2.2s" repeatCount="indefinite"/></circle>
+        </g>
 
-      <!-- VIATURA PM (direita) -->
-      <g class="hot in-overview" data-card="policia" transform="translate(706 490)">
-        <rect x="-34" y="-14" width="34" height="16" fill="#e0d8c8" stroke="#0d0f1a" stroke-width="0.8"/>
-        <polygon points="-30,-14 -24,-25 -10,-25 -4,-14" fill="#e0d8c8" stroke="#0d0f1a" stroke-width="0.8"/>
-        <rect x="-24" y="-25" width="14" height="10" fill="#0d0f1a"/>
-        <rect x="-30" y="-7" width="7" height="7" fill="#2a4280"/>
-        <rect x="-10" y="-7" width="7" height="7" fill="#c8332a" class="blk"/>
-        <text x="-17" y="-1" text-anchor="middle" fill="#0d0f1a" font-family="'Space Mono',monospace" font-size="6" font-weight="700">PM</text>
-        <circle cx="-27" cy="3" r="5" fill="#0d0f1a"/>
-        <circle cx="-9" cy="3" r="5" fill="#0d0f1a"/>
-        <ellipse cx="-17" cy="7" rx="18" ry="3" fill="#000" opacity=".4"/>
-        <rect x="-38" y="-28" width="42" height="36" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
-      </g>
+        <g class="d1" transform="translate(198 365)"><circle cx="0" cy="0" r="9" fill="#7a4818"/><rect x="-5" y="-2" width="10" height="5" fill="#0d0f1a"/><rect x="-8" y="8" width="16" height="22" fill="#e8dcc8"/><rect x="-4" y="30" width="6" height="16" fill="#2a4280"/><rect x="2" y="30" width="6" height="16" fill="#2a4280"/><line x1="8" y1="14" x2="16" y2="5" stroke="#7a4818" stroke-width="3" stroke-linecap="round"/><ellipse cx="0" cy="47" rx="8" ry="2.5" fill="#000" opacity=".4"/></g>
+        <g transform="translate(42 378)"><circle cx="0" cy="0" r="8" fill="#7a4818"/><rect x="-5" y="-5" width="10" height="3" fill="#c8332a"/><rect x="-7" y="6" width="14" height="20" fill="#2e7858"/><rect x="-4" y="26" width="5" height="14" fill="#0d0f1a"/><rect x="1" y="26" width="5" height="14" fill="#0d0f1a"/><line x1="7" y1="10" x2="16" y2="19" stroke="#7a4818" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="0" cy="41" rx="7" ry="2" fill="#000" opacity=".4"/></g>
+        <g class="d2" transform="translate(268 468)"><circle cx="0" cy="0" r="9" fill="#2e1e10"/><rect x="-8" y="-6" width="16" height="4" fill="#0d0f1a"/><rect x="-8" y="8" width="16" height="20" fill="#f0b930"/><rect x="-4" y="28" width="4" height="16" fill="#2a4280"/><rect x="2" y="28" width="4" height="16" fill="#2a4280"/><ellipse cx="0" cy="45" rx="8" ry="2" fill="#000" opacity=".4"/></g>
+        <g class="d4" transform="translate(388 470)"><circle cx="0" cy="0" r="9" fill="#4a2810"/><path d="M -9 -5 Q -10 -12 -4 -12 Q 0 -14 4 -12 Q 10 -12 9 -5 L 9 0 L -9 0 Z" fill="#0d0f1a"/><rect x="-8" y="8" width="16" height="16" fill="#c8332a"/><rect x="-8" y="24" width="16" height="12" fill="#0d0f1a"/><rect x="-5" y="36" width="4" height="14" fill="#4a2810"/><rect x="1" y="36" width="4" height="14" fill="#4a2810"/><ellipse cx="0" cy="51" rx="8" ry="2" fill="#000" opacity=".4"/></g>
+        <g class="d3" transform="translate(576 362)"><circle cx="0" cy="0" r="9" fill="#906050"/><path d="M -10 -3 Q -10 -12 0 -14 Q 10 -12 10 -3 Q 8 5 0 6 Q -8 5 -10 -3 Z" fill="#c8332a"/><rect x="-8" y="8" width="16" height="20" fill="#6a2888"/><rect x="-8" y="11" width="16" height="4" fill="#f0b930"/><rect x="-4" y="28" width="5" height="16" fill="#0d0f1a"/><rect x="1" y="28" width="5" height="16" fill="#0d0f1a"/><ellipse cx="0" cy="45" rx="8" ry="2" fill="#000" opacity=".4"/></g>
+        <g transform="translate(640 470)"><rect x="-24" y="0" width="48" height="20" fill="#e8dcc8"/><rect x="-24" y="0" width="48" height="4" fill="#c8332a"/><circle cx="-12" cy="12" r="4" fill="#c87018"/><circle cx="0" cy="12" r="4" fill="#c87018"/><circle cx="12" cy="12" r="4" fill="#c87018"/><g transform="translate(-34,-10)"><circle cx="0" cy="0" r="8" fill="#4a2810"/><rect x="-7" y="6" width="14" height="16" fill="#2e7858"/><rect x="-4" y="22" width="4" height="10" fill="#0d0f1a"/><rect x="1" y="22" width="4" height="10" fill="#0d0f1a"/></g><ellipse cx="-12" cy="32" rx="12" ry="3" fill="#000" opacity=".3"/></g>
 
-      <!-- Dançarinos simples — no chão, na frente dos paredões -->
-<g fill="none">
-  <!-- perto do Hulk (esquerda) -->
-  <g transform="translate(80 374)" class="d2">
-    <circle cx="0" cy="0" r="5" fill="#f0b930"/>
-    <rect x="-3" y="5" width="6" height="10" fill="#c8332a"/>
-    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-  </g>
-  <g transform="translate(108 371)" class="d1">
-    <circle cx="0" cy="0" r="5" fill="#d888a0"/>
-    <rect x="-3" y="5" width="6" height="10" fill="#2a4280"/>
-    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-  </g>
-  <g transform="translate(136 374)" class="d3">
-    <circle cx="0" cy="0" r="5" fill="#e8dcc8"/>
-    <rect x="-3" y="5" width="6" height="10" fill="#2e7858"/>
-    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-  </g>
+        <g transform="translate(706 490)"><rect x="-34" y="-14" width="34" height="16" fill="#e0d8c8" stroke="#0d0f1a" stroke-width="0.8"/><polygon points="-30,-14 -24,-25 -10,-25 -4,-14" fill="#e0d8c8" stroke="#0d0f1a" stroke-width="0.8"/><rect x="-24" y="-25" width="14" height="10" fill="#0d0f1a"/><rect x="-30" y="-7" width="7" height="7" fill="#2a4280"/><rect x="-10" y="-7" width="7" height="7" fill="#c8332a" class="blk"/><text x="-17" y="-1" text-anchor="middle" fill="#0d0f1a" font-family="'Space Mono',monospace" font-size="6" font-weight="700">PM</text><circle cx="-27" cy="3" r="5" fill="#0d0f1a"/><circle cx="-9" cy="3" r="5" fill="#0d0f1a"/><ellipse cx="-17" cy="7" rx="18" ry="3" fill="#000" opacity=".4"/></g>
 
-  <!-- perto do Paulilo (direita) -->
-  <g transform="translate(460 374)" class="d1">
-    <circle cx="0" cy="0" r="5" fill="#3a8058"/>
-    <rect x="-3" y="5" width="6" height="10" fill="#f0b930"/>
-    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-  </g>
-  <g transform="translate(490 371)" class="d3">
-    <circle cx="0" cy="0" r="5" fill="#c8332a"/>
-    <rect x="-3" y="5" width="6" height="10" fill="#0d0f1a"/>
-    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-  </g>
-  <g transform="translate(520 374)" class="d2">
-    <circle cx="0" cy="0" r="5" fill="#2a4280"/>
-    <rect x="-3" y="5" width="6" height="10" fill="#d888a0"/>
-    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-  </g>
-  <g transform="translate(548 371)" class="d1">
-    <circle cx="0" cy="0" r="5" fill="#e890c8"/>
-    <rect x="-3" y="5" width="6" height="10" fill="#6a2888"/>
-    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-  </g>
-</g>
-      <!-- LINHA DO SOLO (perspectiva ilusória) -->
-      <!-- gradiente do chão: linhas de perspectiva convergindo -->
-      <g stroke="#1a1d2e" stroke-width="0.5" opacity=".4">
-        <line x1="380" y1="380" x2="0" y2="520"/>
-        <line x1="380" y1="380" x2="190" y2="520"/>
-        <line x1="380" y1="380" x2="380" y2="520"/>
-        <line x1="380" y1="380" x2="570" y2="520"/>
-        <line x1="380" y1="380" x2="760" y2="520"/>
-      </g>
-
-      <!-- ASSINATURA -->
-      <text x="24" y="514" fill="#2a2e42" font-family="'Space Mono',monospace" font-size="8"
-        letter-spacing="0.2em">cidade traduzida em som</text>
-
-      </g><!-- fim clip -->
-    </svg>
-  </div>
-
-  <!-- STATUS BAR -->
-  <div class="status-bar">
-    <span class="status-texto" id="st-texto">vista geral · um bairro à noite</span>
-    <button class="status-voltar" id="st-voltar">← voltar à cena</button>
-  </div>
-
-  <!-- CARD PRINCIPAL -->
-  <div class="card-area">
-    <div class="card-principal" id="card-main">
-      <div class="card-tag" id="card-tag">comece por qualquer canto</div>
-      <div class="card-titulo" id="card-titulo">três paredões, uma rua, um sábado</div>
-      <p class="card-texto" id="card-texto">Toque numa pessoa para ouvir o que ela diria. Toque num paredão para entrar dentro dele. O carro da polícia ali no canto também tem o que dizer. Use os modos acima para abrir camadas da cidade.</p>
+        <g stroke="#1a1d2e" stroke-width="0.5" opacity=".4"><line x1="380" y1="380" x2="0" y2="520"/><line x1="380" y1="380" x2="190" y2="520"/><line x1="380" y1="380" x2="380" y2="520"/><line x1="380" y1="380" x2="570" y2="520"/><line x1="380" y1="380" x2="760" y2="520"/></g>
+        <text x="24" y="514" fill="#2a2e42" font-family="'Space Mono',monospace" font-size="8" letter-spacing="0.2em">cidade traduzida em som</text>
+        </g>
+      </svg>
     </div>
   </div>
 
-  <!-- PAINEL CAMADAS TÉCNICAS (aparece no modo cena / após entrar em paredão) -->
-  <div class="painel-camadas" id="painel-camadas">
-    <button class="camada-btn" id="cb-agudo" onclick="toggleCamada('agudo')">
-      <span class="cb-dot"></span>
-      <span class="cb-label">alta frequência</span>
-      <span class="cb-nome">Ondas de agudo</span>
-    </button>
-    <button class="camada-btn" id="cb-grave" onclick="toggleCamada('grave')">
-      <span class="cb-dot"></span>
-      <span class="cb-label">baixa frequência</span>
-      <span class="cb-nome">Ondas de grave</span>
-    </button>
-  </div>
+  <div class="textos-scroll">
+    
+    <div class="passo" data-view="overview">
+      <div class="card-principal">
+        <div class="card-tag">vista geral</div>
+        <div class="card-titulo">três paredões, uma rua, um sábado</div>
+        <p class="card-texto">Role a tela para descer a rua e entender como a cidade é desenhada pelo som. A economia, a física e a polícia.</p>
+      </div>
+    </div>
 
-  <!-- SEÇÃO 2: comparador -->
+    <div class="passo" data-view="p1">
+      <div class="card-principal">
+        <div class="card-tag">paredão hulk · profissional</div>
+        <div class="card-titulo">uma fachada de quatro toneladas</div>
+        <p class="card-texto">Custa entre dois e cinco milhões de reais. Caixas modulares empilhadas, gerador próprio, até doze baterias de caminhão. Repare na estrutura do letreiro aos dutos de grave.</p>
+      </div>
+    </div>
+
+    <div class="passo" data-view="p2">
+      <div class="card-principal">
+        <div class="card-tag">som de mala · carrocinha</div>
+        <div class="card-titulo">o paredão mais democrático</div>
+        <p class="card-texto">Porta-malas aberto numa praça, qualquer um pede uma música. É a base da pirâmide da economia sonhadora do paredão.</p>
+      </div>
+    </div>
+
+    <div class="passo" data-view="p3" data-acao="ligar-rosa">
+      <div class="card-principal lgbtq">
+        <div class="card-tag">paredão paulilo · LGBTQIAPN+</div>
+        <div class="card-titulo">outro paredão é possível</div>
+        <p class="card-texto">Estrutura idêntica à do paredão profissional. O que muda é quem pega o microfone, quem dança na frente, quem se sente segura para chegar e reivindicar a rua.</p>
+      </div>
+    </div>
+
+  </div>
+</div> <div class="wrapper-baixo">
   <div class="secao-scroll" id="sec-comparar">
     <div class="secao-titulo">⇌ paredão vs trio elétrico</div>
     <div class="comparador visivel" id="comparador">
       <div class="comp-titulo">comparação de volume · decibéis a 3 metros</div>
-      <div class="comp-item">
-        <span class="comp-nome">paredão profissional</span>
-        <div class="comp-barra-wrap">
-          <div class="comp-barra" id="cb-paredao" style="background:#c8332a;width:0%"></div>
-        </div>
-        <span class="comp-db">110 dB</span>
-      </div>
-      <div class="comp-item">
-        <span class="comp-nome">trio elétrico carnaval</span>
-        <div class="comp-barra-wrap">
-          <div class="comp-barra" id="cb-trio" style="background:#f0b930;width:0%"></div>
-        </div>
-        <span class="comp-db">112 dB</span>
-      </div>
-      <div class="comp-item">
-        <span class="comp-nome">som de mala</span>
-        <div class="comp-barra-wrap">
-          <div class="comp-barra" id="cb-mala" style="background:#4060b8;width:0%"></div>
-        </div>
-        <span class="comp-db">98 dB</span>
-      </div>
-      <div class="comp-item">
-        <span class="comp-nome">avião decolando</span>
-        <div class="comp-barra-wrap">
-          <div class="comp-barra" id="cb-aviao" style="background:#888;width:0%"></div>
-        </div>
-        <span class="comp-db">130 dB</span>
-      </div>
-      <div class="comp-item">
-        <span class="comp-nome">limite legal (lei 5.354)</span>
-        <div class="comp-barra-wrap">
-          <div class="comp-barra" id="cb-lei" style="background:#2e7858;width:0%"></div>
-        </div>
-        <span class="comp-db">70 dB</span>
-      </div>
-      <div class="comp-item">
-        <span class="comp-nome">conversa normal</span>
-        <div class="comp-barra-wrap">
-          <div class="comp-barra" id="cb-conv" style="background:#555;width:0%"></div>
-        </div>
-        <span class="comp-db">60 dB</span>
-      </div>
-      <p style="font-size:11px;color:var(--texto2);margin-top:10px;font-family:'Space Mono',monospace;line-height:1.6;">
-        ↳ Trio elétrico atinge volume igual ou maior.<br>
-        &nbsp;&nbsp; Raramente é abordado. Paredão: 63 apreensões em 2 meses (2024).
-      </p>
+      <div class="comp-item"><span class="comp-nome">paredão profissional</span><div class="comp-barra-wrap"><div class="comp-barra" id="cb-paredao" style="background:#c8332a;width:0%"></div></div><span class="comp-db">110 dB</span></div>
+      <div class="comp-item"><span class="comp-nome">trio elétrico carnaval</span><div class="comp-barra-wrap"><div class="comp-barra" id="cb-trio" style="background:#f0b930;width:0%"></div></div><span class="comp-db">112 dB</span></div>
+      <div class="comp-item"><span class="comp-nome">som de mala</span><div class="comp-barra-wrap"><div class="comp-barra" id="cb-mala" style="background:#4060b8;width:0%"></div></div><span class="comp-db">98 dB</span></div>
+      <div class="comp-item"><span class="comp-nome">limite legal (lei 5.354)</span><div class="comp-barra-wrap"><div class="comp-barra" id="cb-lei" style="background:#2e7858;width:0%"></div></div><span class="comp-db">70 dB</span></div>
     </div>
   </div>
 
-  <!-- SEÇÃO 3: mapa -->
   <div class="secao-scroll" id="sec-mapa">
     <div class="secao-titulo">⊙ propagação sonora no bairro</div>
     <div class="mapa-prop visivel" id="mapa-prop">
@@ -1335,215 +598,30 @@
         <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#c8332a"></div>hulk (grave)</div>
         <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#d4427a"></div>paulilo (grave)</div>
         <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#4060b8"></div>som de mala</div>
-        <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#f0b930"></div>sobreposição</div>
       </div>
     </div>
   </div>
-
-  <!-- SEÇÃO 4: perspectivas -->
-  <div class="secao-scroll" id="sec-visoes">
-    <div class="secao-titulo">◻ perspectivas da festa</div>
-    <div class="painel-camadas visivel" style="grid-template-columns:1fr 1fr 1fr">
-      <button class="camada-btn" id="cb-pol" onclick="toggleVisao('policia','cb-pol')">
-        <span class="cb-dot" style="background:var(--azul)"></span>
-        <span class="cb-label">visão da polícia</span>
-        <span class="cb-nome">fiscalização seletiva</span>
-      </button>
-      <button class="camada-btn" id="cb-vend" onclick="toggleVisao('vendedor','cb-vend')">
-        <span class="cb-dot" style="background:var(--verde)"></span>
-        <span class="cb-label">visão do vendedor</span>
-        <span class="cb-nome">economia informal</span>
-      </button>
-      <button class="camada-btn" id="cb-freq" onclick="toggleVisao('frequentadora','cb-freq')">
-        <span class="cb-dot" style="background:var(--rosa)"></span>
-        <span class="cb-label">visão da frequentadora</span>
-        <span class="cb-nome">rua livre</span>
-      </button>
-    </div>
-  </div>
-
 </div>
 
 <script>
 (function(){
   var svg = document.getElementById('svg-main');
-  var stTexto = document.getElementById('st-texto');
-  var stVoltar = document.getElementById('st-voltar');
-  var cardTag = document.getElementById('card-tag');
-  var cardTitulo = document.getElementById('card-titulo');
-  var cardTexto = document.getElementById('card-texto');
-  var cardMain = document.getElementById('card-main');
-  var painelCamadas = document.getElementById('painel-camadas');
-  var comparador = document.getElementById('comparador');
-  var mapaProp = document.getElementById('mapa-prop');
-  var dica = document.getElementById('dica');
 
-  // ─── DADOS DOS CARDS ───
-  var CARDS = {
-    init: {
-      tag: 'comece por qualquer canto',
-      titulo: 'três paredões, uma rua, um sábado',
-      texto: 'Toque numa pessoa para ouvir o que ela diria. Toque num paredão para entrar dentro dele. O carro da polícia ali no canto também tem o que dizer. Use os modos acima para abrir camadas da cidade.',
-      classe: ''
-    },
-    lekinho: {
-      tag: 'lekinho · cantor de pagodão',
-      titulo: '"canto do jeito que a galera conversa"',
-      texto: 'Estourou em 2024 com bordões que entram no TikTok antes da rádio. Em março foram 15 shows em três cidades. A fórmula é simples: língua de rua numa melodia que gruda.',
-      classe: ''
-    },
-    construtor: {
-      tag: 'construtor · oficina de paredão',
-      titulo: '"tem que achar o ponto que cuspe grave"',
-      texto: 'Sem manual, sem curso universitário. Só ouvido e mão. Sabe dimensionar volume de caixa, calcular duto, distribuir baterias. A academia chama isso de tecnologia situada. Ele chama de mexer no bicho.',
-      classe: ''
-    },
-    chacal: {
-      tag: 'chacal · dono de paredão',
-      titulo: '"tem festa, todo mundo ganha"',
-      texto: 'A manicure ganha porque as meninas se arrumam. O bazar vende roupa. O depósito vende bebida. A moça do acarajé fatura. Antes de música, o paredão é um motor de microeconomia periférica.',
-      classe: ''
-    },
-    frequentadora: {
-      tag: 'frequentadora · 19 anos · Santo Amaro',
-      titulo: '"paredão é uma festa de favela"',
-      texto: 'Livre para todo mundo. Se você tem que pagar já fica chato. Pra ela, favela não é tipo de moradia. É a sociabilidade da rua, o encontro cara a cara, e a cidade que só existe quando o som liga.',
-      classe: ''
-    },
-    paulilo: {
-      tag: 'paulilo paredão · produtora não-binária',
-      titulo: 'primeiro paredão 120% LGBTQIAPN+ do nordeste',
-      texto: 'Travestis, mulheres e gays no protagonismo. Como diz a banda A Travestis: roqueiras, pirigóticas, trevosas, mas curtimos um pagodão. A cultura do paredão está sendo disputada por dentro.',
-      classe: 'lgbtq'
-    },
-    acaraje: {
-      tag: 'tia · bebida e comida',
-      titulo: '"a economia que cabe na bandeja"',
-      texto: 'Acarajé, cerveja gelada, água, cabelo trançado, unha feita. Tudo o que circula numa festa de paredão sustenta dezenas de trabalhadores informais que ficam de fora dos festivais pagos.',
-      classe: 'vendedor'
-    },
-    pesquisa: {
-      tag: 'pesquisadores · UFRB e PUC-SP',
-      titulo: '"a cidade vivida traduzida em som"',
-      texto: 'Júlia Sardenberg, Lucio Agra e Regiane Nakagawa acompanharam paredões em Santo Amaro e Cachoeira por anos. Parafraseando McLuhan: o paredão não toca a cidade, faz a cidade.',
-      classe: ''
-    },
-    policia: {
-      tag: 'polícia · lei municipal 5.354/98',
-      titulo: '"até 70 decibéis das 7h às 22h"',
-      texto: 'Um paredão profissional chega a 110 dB. Mas a apreensão é seletiva: 63 equipamentos confiscados em dois meses de 2024 em Salvador, todos em bairros periféricos. Trio elétrico do carnaval atinge volumes iguais e raramente é abordado.',
-      classe: 'policia'
-    },
-    p1: {
-      tag: 'paredão hulk · profissional',
-      titulo: 'uma fachada de quatro toneladas',
-      texto: 'Custa entre dois e cinco milhões de reais. Caixas modulares empilhadas, gerador próprio, até doze baterias de caminhão. Você está dentro dele agora. Toque nas peças para entender como funciona.',
-      classe: ''
-    },
-    'p1-letrero': {
-      tag: 'letreiro · luzes neon',
-      titulo: 'a assinatura de quem é dono',
-      texto: 'Cada paredão tem um nome próprio: Hulk, Gibão, Chacal, Digo. O letreiro não é só estética. É marca, é convocação, é jeito de saber qual som chegou na festa antes mesmo de ouvir o grave.',
-      classe: ''
-    },
-    'p1-tweet': {
-      tag: 'tweeters · cornetas de agudo',
-      titulo: 'os brilhos que morrem na esquina',
-      texto: 'Vibram muito rápido, frequência alta. Por isso o som que sai delas é direcional, cospe pra frente, e perde força rápido. Não atravessa parede. É chimbau, voz aguda, brilho. Sem elas o paredão seria surdo.',
-      classe: ''
-    },
-    'p1-mid': {
-      tag: 'drivers de médio · 8 a 12 polegadas',
-      titulo: 'o corpo da música',
-      texto: 'É onde mora a voz, o tambor, a melodia que se reconhece. A média frequência é o que o ouvido humano percebe com mais clareza. Sem ela, o paredão vira só tranco — grave sem forma.',
-      classe: ''
-    },
-    'p1-sub': {
-      tag: 'subwoofers · 18 polegadas',
-      titulo: 'o coração grave',
-      texto: 'Quatro unidades de 46 cm de diâmetro. Vibram devagar e empurram muito ar de cada vez. Ondas longas que contornam paredes, atravessam três ruas, e estouram no estômago. Sem isso, não há paredão.',
-      classe: ''
-    },
-    'p1-dutos': {
-      tag: 'caixas duto · graves reflexivos',
-      titulo: 'as caixas que respiram',
-      texto: 'O grave não sai direto do cone. Sai do duto da caixa, depois de ser modelado dentro dela. O volume interno e o tamanho do duto definem qual frequência exata cada caixa rende. Aqui mora a sintonia fina da oficina.',
-      classe: ''
-    },
-    p2: {
-      tag: 'som de mala · carrocinha',
-      titulo: 'o paredão mais democrático',
-      texto: 'Porta-malas aberto numa praça, qualquer um pede uma música. Em Acupe, distrito de Santo Amaro, os carros se reúnem nas tardes de domingo. Não tem porta, não tem ingresso. É a base da pirâmide.',
-      classe: ''
-    },
-    'p2-cabine': {
-      tag: 'cabine · operação',
-      titulo: 'o DJ é o motorista',
-      texto: 'O dono do carro escolhe, ou aceita pedido de quem chega. Faz parte do pacto: você chega, fala o que quer ouvir, e a música entra. Nos paredões grandes isso não acontece mais — o repertório é fechado.',
-      classe: ''
-    },
-    'p2-corpo': {
-      tag: 'carro · base modesta',
-      titulo: 'o sonho de subir',
-      texto: 'Quem está no som de mala almeja sair dali e ir pra carrocinha. Da carrocinha, pra Hilux, Amarok ou Ranger. De lá, pra carreta com placa vertical. É a escada da economia do paredão.',
-      classe: ''
-    },
-    'p2-sub': {
-      tag: 'subwoofer · no porta-malas',
-      titulo: 'um só, mas batendo',
-      texto: 'Mesmo um som de mala empurra grave por uma rua inteira, com um único alto-falante grande. A física não muda: cone grande, vibração lenta, comprimento de onda longo. Tudo o que importa é o tamanho do ar movido.',
-      classe: ''
-    },
-    p3: {
-      tag: 'paredão paulilo · LGBTQIAPN+',
-      titulo: 'outro paredão é possível',
-      texto: 'Estrutura idêntica à do paredão profissional. O que muda é quem pega o microfone, quem dança na frente, quem se sente segura para chegar. Toque nas peças.',
-      classe: 'lgbtq'
-    },
-    'p3-letrero': {
-      tag: 'letreiro · neon arco-íris',
-      titulo: 'reivindicação que pisca',
-      texto: 'A bandeira no topo do paredão sinaliza, antes da música começar, qual é o pacto da festa. Pra muita gente, é a primeira vez que pode chegar sem precisar disfarçar nada.',
-      classe: 'lgbtq'
-    },
-    'p3-bandeira': {
-      tag: 'bandeira · seis faixas',
-      titulo: 'reivindicação que pisca',
-      texto: 'A bandeira no topo do paredão sinaliza, antes da música começar, qual é o pacto da festa. Pra muita gente, é a primeira vez que pode chegar sem precisar disfarçar nada.',
-      classe: 'lgbtq'
-    },
-    'p3-voz': {
-      tag: 'microfones · médios',
-      titulo: '"voz de quem nunca tinha sido voz"',
-      texto: 'Tertuliana Lustosa, vocalista trans da banda A Travestis, gravou com Pabllo Vittar. O médio é a faixa onde a voz humana mora. É aqui que se decide quem fala — e quem é ouvido — na festa.',
-      classe: 'lgbtq'
-    },
-    'p3-shake': {
-      tag: 'subwoofers · idênticos',
-      titulo: 'mesma física, outra política',
-      texto: 'O grave que sai daqui é igual ao grave do paredão Hulk. A mesma compressão, a mesma rarefação, o mesmo comprimento de onda. O que muda é o que vem na voz por cima, e quem ele convoca pra rua.',
-      classe: 'lgbtq'
-    }
-  };
-
-  // ─── VIEWS (zoom SVG) ───
+  // ─── VIEWS (zoom SVG da sua função original) ───
   var VIEWS = {
-    overview: { vb: [0,0,760,520], status: 'vista geral · um bairro à noite' },
-    p1:       { vb: [30,248,220,180], status: 'dentro do paredão hulk' },
-    p2:       { vb: [195,390,220,140], status: 'dentro do som de mala' },
-    p3:       { vb: [415,248,230,180], status: 'dentro do paredão paulilo' }
+    overview: { vb: [0,0,760,520] },
+    p1:       { vb: [30,248,220,180] },
+    p2:       { vb: [195,390,220,140] },
+    p3:       { vb: [415,248,230,180] }
   };
 
-  var currentView = 'overview';
   var raf = null;
-  var activeModo = 'cena';
-  var activeCamadas = { agudo: false, grave: false };
 
-  // ─── ZOOM ANIMADO ───
+  // ─── ZOOM ANIMADO DO SEU CÓDIGO ORIGINAL ───
   function animVB(target, dur){
     var start = svg.getAttribute('viewBox').split(/\s+/).map(parseFloat);
     var t0 = performance.now();
-    dur = dur || 600;
+    dur = dur || 800; // Tempo um pouco maior para a rolagem ficar suave
     if (raf) cancelAnimationFrame(raf);
     function step(now){
       var t = Math.min((now-t0)/dur, 1);
@@ -1561,48 +639,54 @@
   function setView(name, animate){
     var v = VIEWS[name];
     if(!v) return;
-    currentView = name;
-    stTexto.textContent = v.status;
-    if(name==='overview') stVoltar.classList.remove('show');
-    else stVoltar.classList.add('show');
-    svg.classList.remove('mode-overview','mode-p1','mode-p2','mode-p3');
-    svg.classList.add('mode-'+name);
     if(animate) animVB(v.vb);
     else svg.setAttribute('viewBox', v.vb.join(' '));
   }
 
-  // ─── CARD ───
-  function showCard(id){
-    var c = CARDS[id];
-    if(!c) return;
-    cardTag.textContent = c.tag;
-    cardTitulo.textContent = c.titulo;
-    cardTexto.textContent = c.texto;
-    cardMain.className = 'card-principal' + (c.classe ? ' '+c.classe : '');
-  }
+  // ─── NOVO: INTERSECTION OBSERVER PARA O SCROLLYTELLING ───
+  const passos = document.querySelectorAll('.passo');
+  
+  const observerOptions = {
+    root: null,
+    rootMargin: '-40% 0px -40% 0px', // Ativa quando o card passa pelo meio da tela
+    threshold: 0
+  };
 
-  // ─── CLIQUES SVG ───
-  document.querySelectorAll('.hot').forEach(function(el){
-    el.addEventListener('click',function(e){
-      e.stopPropagation();
-      var zoom = el.getAttribute('data-zoom');
-      var card = el.getAttribute('data-card');
-      if(zoom){ setView(zoom,true); }
-      if(card){ showCard(card); }
+  const scrollyObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        
+        // Destaca o card
+        passos.forEach(p => p.classList.remove('ativo'));
+        entry.target.classList.add('ativo');
+
+        // Lê para onde a câmera deve ir e aciona a sua função animVB
+        var zoomAlvo = entry.target.getAttribute('data-view');
+        if(zoomAlvo) {
+          setView(zoomAlvo, true);
+        }
+
+        // Ligar luzes extras se necessário
+        var acao = entry.target.getAttribute('data-acao');
+        if (acao === 'ligar-rosa') {
+          svg.classList.add('show-ondas', 'show-agudo', 'show-grave');
+        } else {
+          svg.classList.remove('show-ondas', 'show-agudo', 'show-grave');
+        }
+      }
     });
+  }, observerOptions);
+
+  passos.forEach(function(passo) {
+    scrollyObserver.observe(passo);
   });
 
-  stVoltar.addEventListener('click',function(){
-    setView('overview',true);
-    showCard('init');
-  });
-
- // ─── SCROLL REVEAL ───
+  // ─── ANIMAÇÕES DA PARTE INFERIOR (Gráficos e Mapas) ───
   var secoes = document.querySelectorAll('.secao-scroll');
   var barrasAnimadas = false;
   var mapaDesenhado = false;
 
-  var observer = new IntersectionObserver(function(entries){
+  var observerBottom = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(!entry.isIntersecting) return;
       entry.target.classList.add('revelada');
@@ -1615,71 +699,18 @@
         mapaDesenhado = true;
         desenharMapa();
       }
-      if(entry.target.id === 'sec-ondas'){
-        svg.classList.add('show-ondas','show-grave','show-agudo');
-      }
     });
   }, { threshold: 0.15 });
 
-  secoes.forEach(function(s){ observer.observe(s); });
+  secoes.forEach(function(s){ observerBottom.observe(s); });
 
-  // toggle de visões (perspectivas)
-  window.toggleVisao = function(tipo, btnId){
-    var classes = ['policia','vendedor','frequentadora'];
-    var ativo = svg.classList.contains('show-'+tipo);
-    // desliga todos
-    classes.forEach(function(c){
-      svg.classList.remove('show-'+c);
-      ['cb-pol','cb-vend','cb-freq'].forEach(function(id){
-        var b = document.getElementById(id);
-        if(b) b.classList.remove('on');
-      });
-    });
-    // liga o clicado se estava desligado
-    if(!ativo){
-      svg.classList.add('show-'+tipo);
-      var btn = document.getElementById(btnId);
-      if(btn) btn.classList.add('on');
-    }
-  };
-
-  function showCardModo(m){
-    var modos = {
-      ondas: { tag:'camadas sonoras · frequências visíveis', titulo:'como o som viaja no bairro', texto:'Ondas de grave têm comprimento longo e contornam obstáculos. Ondas de agudo são curtas e direcionais. É por isso que o tranco do paredão chega longe, mas o chimbau some na esquina.' },
-      grave: { tag:'alcance do grave · 30–120 Hz', titulo:'o que atravessa paredes', texto:'Abaixo de 80 Hz, a onda sonora tem comprimento maior que a largura de uma parede comum. Ela não é bloqueada — ela passa. É por isso que o vizinho sente o grave mesmo com a janela fechada.' },
-      comparar: { tag:'comparação · decibéis medidos a 3m', titulo:'paredão x trio elétrico: mesma física', texto:'O trio elétrico do carnaval soteropolitano atinge 112 dB — dois decibéis acima do paredão. Ambos estão 40 dB acima do limite legal. A diferença é qual é tolerado pelo Estado.' },
-      mapa: { tag:'propagação sonora · modelo simplificado', titulo:'a cidade que o som desenha', texto:'Grave viaja em ondas esféricas que se atenuam 6 dB a cada dobro de distância. Em dois paredões simultâneos, as zonas se sobrepõem e criam padrões de interferência — mais forte em alguns pontos, mais fraco em outros.' },
-      policia: { tag:'visão da polícia · presença seletiva', titulo:'63 apreensões em 2 meses (2024)', texto:'Todos em bairros periféricos de Salvador. A lei 5.354/98 limita sons a 70 dB, mas o enforcement é espacialmente desigual. Trios elétricos do carnaval atingem os mesmos volumes e raramente são abordados.', classe:'policia' },
-      vendedor: { tag:'visão do vendedor informal', titulo:'economia que não aparece no PIB', texto:'Uma noite de paredão movimenta acarajé, cerveja, roupa, trança, transporte. Nenhum desses trabalhadores tem carteira assinada naquela noite. A festa gera renda distribuída sem intermediário formal.', classe:'vendedor' },
-      frequentadora: { tag:'visão da frequentadora · 19 anos', titulo:'"a rua é de graça, o paredão é livre"', texto:'Pra ela, favela não é tipo de moradia: é sociabilidade, é encontro, é cidade que só existe quando o som liga. O paredão cria um espaço público improvisado onde não há porteiro, não há lista, não há dress code.', classe:'' }
-    };
-    var d = modos[m];
-    if(d){
-      cardTag.textContent = d.tag;
-      cardTitulo.textContent = d.titulo;
-      cardTexto.textContent = d.texto;
-      cardMain.className = 'card-principal' + (d.classe ? ' '+d.classe : '');
-    }
-  }
-
-  // ─── TOGGLE CAMADAS ───
-  window.toggleCamada = function(tipo){
-    activeCamadas[tipo] = !activeCamadas[tipo];
-    var btn = document.getElementById('cb-'+tipo);
-    btn.classList.toggle('on', activeCamadas[tipo]);
-    svg.classList.toggle('show-'+tipo, activeCamadas[tipo]);
-  };
-
-  // ─── BARRAS COMPARADOR ───
   function animBarras(){
     setTimeout(function(){
       var dados = {
         'cb-paredao': 110/130*100,
         'cb-trio':    112/130*100,
         'cb-mala':    98/130*100,
-        'cb-aviao':   130/130*100,
-        'cb-lei':     70/130*100,
-        'cb-conv':    60/130*100
+        'cb-lei':     70/130*100
       };
       Object.keys(dados).forEach(function(id){
         var el = document.getElementById(id);
@@ -1688,28 +719,14 @@
     }, 80);
   }
 
-  // ─── MAPA DE PROPAGAÇÃO (canvas) ───
   function desenharMapa(){
     var canvas = document.getElementById('mapa-canvas');
     var w = canvas.width, h = canvas.height;
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0,0,w,h);
-
-    // fundo
     ctx.fillStyle = '#0d0f1a';
     ctx.fillRect(0,0,w,h);
-
-    // grade de quarteirões estilizada
-    ctx.strokeStyle = '#1a1d2e';
-    ctx.lineWidth = 0.5;
-    for(var x=0;x<w;x+=40){
-      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
-    }
-    for(var y=0;y<h;y+=40){
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
-    }
-
-    // fontes sonoras
+    
     var fontes = [
       { x: w*0.17, y: h*0.5, cor: '#c8332a', raio: 130, nome: 'Hulk' },
       { x: w*0.67, y: h*0.5, cor: '#d4427a', raio: 128, nome: 'Paulilo' },
@@ -1717,81 +734,14 @@
     ];
 
     fontes.forEach(function(f){
-      // zona de atenuação por distância (círculos concêntricos)
       for(var r=f.raio; r>0; r-=20){
         var alpha = (r/f.raio)*0.18;
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, r, 0, Math.PI*2);
-        ctx.fillStyle = f.cor.replace(')',','+alpha+')').replace('rgb','rgba').replace('#','');
-        // fallback
-        ctx.save();
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = f.cor;
-        ctx.fill();
-        ctx.restore();
+        ctx.beginPath(); ctx.arc(f.x, f.y, r, 0, Math.PI*2);
+        ctx.fillStyle = f.cor; ctx.globalAlpha = alpha; ctx.fill();
       }
     });
-
-    // zona de interferência (onde dois campos se sobrepõem)
-    var imgData = ctx.getImageData(0,0,w,h);
-    // simplificado: desenhar elipses de overlap nas interseções
-    ctx.save();
-    ctx.globalAlpha = 0.12;
-    ctx.fillStyle = '#f0b930';
-    // overlap Hulk+Paulilo
-    ctx.beginPath();
-    ctx.ellipse(w*0.42, h*0.5, 70, 45, 0, 0, Math.PI*2);
-    ctx.fill();
-    // overlap Hulk+mala
-    ctx.beginPath();
-    ctx.ellipse(w*0.29, h*0.63, 40, 30, 0, 0, Math.PI*2);
-    ctx.fill();
-    // overlap Paulilo+mala
-    ctx.beginPath();
-    ctx.ellipse(w*0.55, h*0.63, 38, 28, 0, 0, Math.PI*2);
-    ctx.fill();
-    ctx.restore();
-
-    // círculos de distância
-    fontes.forEach(function(f){
-      [f.raio*0.33, f.raio*0.66, f.raio].forEach(function(r){
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, r, 0, Math.PI*2);
-        ctx.strokeStyle = f.cor;
-        ctx.globalAlpha = 0.25;
-        ctx.lineWidth = 0.8;
-        ctx.setLineDash([4,4]);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      });
-      ctx.globalAlpha = 1;
-
-      // ponto central
-      ctx.beginPath();
-      ctx.arc(f.x, f.y, 5, 0, Math.PI*2);
-      ctx.fillStyle = f.cor;
-      ctx.fill();
-
-      // label
-      ctx.fillStyle = f.cor;
-      ctx.font = '10px Space Mono, monospace';
-      ctx.fillText(f.nome, f.x+8, f.y-8);
-    });
-
-    // escala
-    ctx.fillStyle = '#2a2e42';
-    ctx.fillRect(w-120, h-24, 100, 18);
-    ctx.strokeStyle = '#4a4e62';
-    ctx.lineWidth = 0.5;
-    ctx.strokeRect(w-120, h-24, 100, 18);
-    ctx.fillStyle = '#888';
-    ctx.font = '8px Space Mono, monospace';
-    ctx.fillText('~50m por célula', w-114, h-11);
+    ctx.globalAlpha = 1;
   }
-
-  // ─── INIT ───
-  setView('overview', false);
-  showCard('init');
 
 })();
 </script>
