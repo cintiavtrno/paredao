@@ -448,6 +448,39 @@
 
     .dica { padding: 16px; margin-bottom: 20px; }
   }
+  /* ─── SCROLL-REVEAL ─── */
+.secao-scroll {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+              transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  margin: 0 24px 0;
+}
+.secao-scroll.revelada {
+  opacity: 1;
+  transform: translateY(0);
+}
+.secao-titulo {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--texto2);
+  padding: 28px 0 10px;
+  border-top: 1px solid var(--cinza);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.secao-titulo::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--cinza);
+}
+@media (max-width: 500px) {
+  .secao-scroll { margin: 0 14px 0; }
+}
 </style>
 </head>
 <body>
@@ -465,18 +498,6 @@
       decibéis<br>a três metros
     </div>
   </header>
-
-  <!-- TOOLBAR -->
-  <div class="modos-bar" id="modos-bar">
-    <button class="modo-btn ativo" data-modo="cena" onclick="setModo('cena',this)">↗ cena</button>
-    <button class="modo-btn" data-modo="ondas" onclick="setModo('ondas',this)">~ ondas sonoras</button>
-    <button class="modo-btn" data-modo="grave" onclick="setModo('grave',this)">◉ alcance do grave</button>
-    <button class="modo-btn" data-modo="comparar" onclick="setModo('comparar',this)">⇌ trio vs paredão</button>
-    <button class="modo-btn" data-modo="mapa" onclick="setModo('mapa',this)">⊙ propagação</button>
-    <button class="modo-btn especial" data-modo="policia" onclick="setModo('policia',this)">◻ visão da polícia</button>
-    <button class="modo-btn verde" data-modo="vendedor" onclick="setModo('vendedor',this)">◻ visão do vendedor</button>
-    <button class="modo-btn azul" data-modo="frequentadora" onclick="setModo('frequentadora',this)">◻ visão da frequentadora</button>
-  </div>
 
   <!-- PALCO -->
   <div class="palco" id="palco">
@@ -1163,36 +1184,48 @@
         <rect x="-38" y="-28" width="42" height="36" fill="none" stroke="#f0b930" stroke-width="1.2" class="ring"/>
       </g>
 
-      <!-- Dançarinos simples (fundo, plano médio) -->
-      <g fill="none">
-        <g transform="translate(158 472)" class="d1">
-          <circle cx="0" cy="0" r="5" fill="#f0b930"/>
-          <rect x="-3" y="5" width="6" height="10" fill="#c8332a"/>
-          <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-        </g>
-        <g transform="translate(335 477)" class="d2">
-          <circle cx="0" cy="0" r="5" fill="#d888a0"/>
-          <rect x="-3" y="5" width="6" height="10" fill="#2a4280"/>
-          <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-        </g>
-        <g transform="translate(445 480)" class="d1">
-          <circle cx="0" cy="0" r="5" fill="#3a8058"/>
-          <rect x="-3" y="5" width="6" height="10" fill="#f0b930"/>
-          <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-        </g>
-        <g transform="translate(492 477)" class="d3">
-          <circle cx="0" cy="0" r="5" fill="#c8332a"/>
-          <rect x="-3" y="5" width="6" height="10" fill="#0d0f1a"/>
-          <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-        </g>
-        <g transform="translate(534 480)" class="d2">
-          <circle cx="0" cy="0" r="5" fill="#2a4280"/>
-          <rect x="-3" y="5" width="6" height="10" fill="#d888a0"/>
-          <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
-        </g>
-      </g>
+      <!-- Dançarinos simples — no chão, na frente dos paredões -->
+<g fill="none">
+  <!-- perto do Hulk (esquerda) -->
+  <g transform="translate(80 374)" class="d2">
+    <circle cx="0" cy="0" r="5" fill="#f0b930"/>
+    <rect x="-3" y="5" width="6" height="10" fill="#c8332a"/>
+    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
+  </g>
+  <g transform="translate(108 371)" class="d1">
+    <circle cx="0" cy="0" r="5" fill="#d888a0"/>
+    <rect x="-3" y="5" width="6" height="10" fill="#2a4280"/>
+    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
+  </g>
+  <g transform="translate(136 374)" class="d3">
+    <circle cx="0" cy="0" r="5" fill="#e8dcc8"/>
+    <rect x="-3" y="5" width="6" height="10" fill="#2e7858"/>
+    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
+  </g>
 
-      <!-- ░░░ LINHA DO SOLO (perspectiva ilusória) ░░░ -->
+  <!-- perto do Paulilo (direita) -->
+  <g transform="translate(460 374)" class="d1">
+    <circle cx="0" cy="0" r="5" fill="#3a8058"/>
+    <rect x="-3" y="5" width="6" height="10" fill="#f0b930"/>
+    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
+  </g>
+  <g transform="translate(490 371)" class="d3">
+    <circle cx="0" cy="0" r="5" fill="#c8332a"/>
+    <rect x="-3" y="5" width="6" height="10" fill="#0d0f1a"/>
+    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
+  </g>
+  <g transform="translate(520 374)" class="d2">
+    <circle cx="0" cy="0" r="5" fill="#2a4280"/>
+    <rect x="-3" y="5" width="6" height="10" fill="#d888a0"/>
+    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
+  </g>
+  <g transform="translate(548 371)" class="d1">
+    <circle cx="0" cy="0" r="5" fill="#e890c8"/>
+    <rect x="-3" y="5" width="6" height="10" fill="#6a2888"/>
+    <ellipse cx="0" cy="16" rx="4" ry="1.5" fill="#000" opacity=".4"/>
+  </g>
+</g>
+      <!-- LINHA DO SOLO (perspectiva ilusória) -->
       <!-- gradiente do chão: linhas de perspectiva convergindo -->
       <g stroke="#1a1d2e" stroke-width="0.5" opacity=".4">
         <line x1="380" y1="380" x2="0" y2="520"/>
@@ -1239,69 +1272,95 @@
     </button>
   </div>
 
-  <!-- COMPARADOR trio vs paredão -->
-  <div class="comparador" id="comparador">
-    <div class="comp-titulo">comparação de volume · decibéis a 3 metros</div>
-    <div class="comp-item">
-      <span class="comp-nome">paredão profissional</span>
-      <div class="comp-barra-wrap">
-        <div class="comp-barra" id="cb-paredao" style="background:#c8332a;width:0%"></div>
+  <!-- SEÇÃO 2: comparador -->
+  <div class="secao-scroll" id="sec-comparar">
+    <div class="secao-titulo">⇌ paredão vs trio elétrico</div>
+    <div class="comparador visivel" id="comparador">
+      <div class="comp-titulo">comparação de volume · decibéis a 3 metros</div>
+      <div class="comp-item">
+        <span class="comp-nome">paredão profissional</span>
+        <div class="comp-barra-wrap">
+          <div class="comp-barra" id="cb-paredao" style="background:#c8332a;width:0%"></div>
+        </div>
+        <span class="comp-db">110 dB</span>
       </div>
-      <span class="comp-db">110 dB</span>
-    </div>
-    <div class="comp-item">
-      <span class="comp-nome">trio elétrico carnaval</span>
-      <div class="comp-barra-wrap">
-        <div class="comp-barra" id="cb-trio" style="background:#f0b930;width:0%"></div>
+      <div class="comp-item">
+        <span class="comp-nome">trio elétrico carnaval</span>
+        <div class="comp-barra-wrap">
+          <div class="comp-barra" id="cb-trio" style="background:#f0b930;width:0%"></div>
+        </div>
+        <span class="comp-db">112 dB</span>
       </div>
-      <span class="comp-db">112 dB</span>
-    </div>
-    <div class="comp-item">
-      <span class="comp-nome">som de mala</span>
-      <div class="comp-barra-wrap">
-        <div class="comp-barra" id="cb-mala" style="background:#4060b8;width:0%"></div>
+      <div class="comp-item">
+        <span class="comp-nome">som de mala</span>
+        <div class="comp-barra-wrap">
+          <div class="comp-barra" id="cb-mala" style="background:#4060b8;width:0%"></div>
+        </div>
+        <span class="comp-db">98 dB</span>
       </div>
-      <span class="comp-db">98 dB</span>
-    </div>
-    <div class="comp-item">
-      <span class="comp-nome">avião decolando</span>
-      <div class="comp-barra-wrap">
-        <div class="comp-barra" id="cb-aviao" style="background:#888;width:0%"></div>
+      <div class="comp-item">
+        <span class="comp-nome">avião decolando</span>
+        <div class="comp-barra-wrap">
+          <div class="comp-barra" id="cb-aviao" style="background:#888;width:0%"></div>
+        </div>
+        <span class="comp-db">130 dB</span>
       </div>
-      <span class="comp-db">130 dB</span>
-    </div>
-    <div class="comp-item">
-      <span class="comp-nome">limite legal (lei 5.354)</span>
-      <div class="comp-barra-wrap">
-        <div class="comp-barra" id="cb-lei" style="background:#2e7858;width:0%"></div>
+      <div class="comp-item">
+        <span class="comp-nome">limite legal (lei 5.354)</span>
+        <div class="comp-barra-wrap">
+          <div class="comp-barra" id="cb-lei" style="background:#2e7858;width:0%"></div>
+        </div>
+        <span class="comp-db">70 dB</span>
       </div>
-      <span class="comp-db">70 dB</span>
-    </div>
-    <div class="comp-item">
-      <span class="comp-nome">conversa normal</span>
-      <div class="comp-barra-wrap">
-        <div class="comp-barra" id="cb-conv" style="background:#555;width:0%"></div>
+      <div class="comp-item">
+        <span class="comp-nome">conversa normal</span>
+        <div class="comp-barra-wrap">
+          <div class="comp-barra" id="cb-conv" style="background:#555;width:0%"></div>
+        </div>
+        <span class="comp-db">60 dB</span>
       </div>
-      <span class="comp-db">60 dB</span>
-    </div>
-    <p style="font-size:11px;color:var(--texto2);margin-top:10px;font-family:'Space Mono',monospace;line-height:1.6;">
-      ↳ Trio elétrico do carnaval atinge volume igual ou maior.<br>
-      &nbsp;&nbsp; Raramente é abordado. Paredão: 63 apreensões em 2 meses (2024).
-    </p>
-  </div>
-
-  <!-- MAPA DE PROPAGAÇÃO -->
-  <div class="mapa-prop" id="mapa-prop">
-    <canvas id="mapa-canvas" width="720" height="360"></canvas>
-    <div class="mapa-legenda">
-      <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#c8332a"></div>paredão hulk (grave)</div>
-      <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#d4427a"></div>paulilo (grave)</div>
-      <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#4060b8"></div>som de mala</div>
-      <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#f0b930"></div>sobreposição de frequências</div>
+      <p style="font-size:11px;color:var(--texto2);margin-top:10px;font-family:'Space Mono',monospace;line-height:1.6;">
+        ↳ Trio elétrico atinge volume igual ou maior.<br>
+        &nbsp;&nbsp; Raramente é abordado. Paredão: 63 apreensões em 2 meses (2024).
+      </p>
     </div>
   </div>
 
-  <div class="dica" id="dica">os elementos com anel dourado são clicáveis</div>
+  <!-- SEÇÃO 3: mapa -->
+  <div class="secao-scroll" id="sec-mapa">
+    <div class="secao-titulo">⊙ propagação sonora no bairro</div>
+    <div class="mapa-prop visivel" id="mapa-prop">
+      <canvas id="mapa-canvas" width="720" height="360"></canvas>
+      <div class="mapa-legenda">
+        <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#c8332a"></div>hulk (grave)</div>
+        <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#d4427a"></div>paulilo (grave)</div>
+        <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#4060b8"></div>som de mala</div>
+        <div class="mapa-legenda-item"><div class="mapa-dot" style="background:#f0b930"></div>sobreposição</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 4: perspectivas -->
+  <div class="secao-scroll" id="sec-visoes">
+    <div class="secao-titulo">◻ perspectivas da festa</div>
+    <div class="painel-camadas visivel" style="grid-template-columns:1fr 1fr 1fr">
+      <button class="camada-btn" id="cb-pol" onclick="toggleVisao('policia','cb-pol')">
+        <span class="cb-dot" style="background:var(--azul)"></span>
+        <span class="cb-label">visão da polícia</span>
+        <span class="cb-nome">fiscalização seletiva</span>
+      </button>
+      <button class="camada-btn" id="cb-vend" onclick="toggleVisao('vendedor','cb-vend')">
+        <span class="cb-dot" style="background:var(--verde)"></span>
+        <span class="cb-label">visão do vendedor</span>
+        <span class="cb-nome">economia informal</span>
+      </button>
+      <button class="camada-btn" id="cb-freq" onclick="toggleVisao('frequentadora','cb-freq')">
+        <span class="cb-dot" style="background:var(--rosa)"></span>
+        <span class="cb-label">visão da frequentadora</span>
+        <span class="cb-nome">rua livre</span>
+      </button>
+    </div>
+  </div>
 
 </div>
 
@@ -1538,52 +1597,49 @@
     showCard('init');
   });
 
-  // ─── MODOS ───
-  window.setModo = function(modo, btn){
-    activeModo = modo;
-    document.querySelectorAll('.modo-btn').forEach(function(b){ b.classList.remove('ativo'); });
-    if(btn) btn.classList.add('ativo');
+ // ─── SCROLL REVEAL ───
+  var secoes = document.querySelectorAll('.secao-scroll');
+  var barrasAnimadas = false;
+  var mapaDesenhado = false;
 
-    // reset overlays visuais no SVG
-    svg.classList.remove('show-ondas','show-grave','show-agudo','show-policia','show-vendedor','show-frequentadora');
-    painelCamadas.classList.remove('visivel');
-    comparador.classList.remove('visivel');
-    mapaProp.classList.remove('visivel');
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      entry.target.classList.add('revelada');
 
-    if(modo==='cena'){
-      painelCamadas.classList.add('visivel');
-      showCard('init');
-    } else if(modo==='ondas'){
-      svg.classList.add('show-ondas','show-grave','show-agudo');
-      activeCamadas = {agudo:true, grave:true};
-      document.getElementById('cb-agudo').classList.add('on');
-      document.getElementById('cb-grave').classList.add('on');
-      painelCamadas.classList.add('visivel');
-      showCardModo('ondas');
-    } else if(modo==='grave'){
-      svg.classList.add('show-grave');
-      activeCamadas = {agudo:false, grave:true};
-      document.getElementById('cb-grave').classList.add('on');
-      document.getElementById('cb-agudo').classList.remove('on');
-      painelCamadas.classList.add('visivel');
-      showCardModo('grave');
-    } else if(modo==='comparar'){
-      comparador.classList.add('visivel');
-      animBarras();
-      showCardModo('comparar');
-    } else if(modo==='mapa'){
-      mapaProp.classList.add('visivel');
-      desenharMapa();
-      showCardModo('mapa');
-    } else if(modo==='policia'){
-      svg.classList.add('show-policia');
-      showCardModo('policia');
-    } else if(modo==='vendedor'){
-      svg.classList.add('show-vendedor');
-      showCardModo('vendedor');
-    } else if(modo==='frequentadora'){
-      svg.classList.add('show-frequentadora');
-      showCardModo('frequentadora');
+      if(entry.target.id === 'sec-comparar' && !barrasAnimadas){
+        barrasAnimadas = true;
+        animBarras();
+      }
+      if(entry.target.id === 'sec-mapa' && !mapaDesenhado){
+        mapaDesenhado = true;
+        desenharMapa();
+      }
+      if(entry.target.id === 'sec-ondas'){
+        svg.classList.add('show-ondas','show-grave','show-agudo');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  secoes.forEach(function(s){ observer.observe(s); });
+
+  // toggle de visões (perspectivas)
+  window.toggleVisao = function(tipo, btnId){
+    var classes = ['policia','vendedor','frequentadora'];
+    var ativo = svg.classList.contains('show-'+tipo);
+    // desliga todos
+    classes.forEach(function(c){
+      svg.classList.remove('show-'+c);
+      ['cb-pol','cb-vend','cb-freq'].forEach(function(id){
+        var b = document.getElementById(id);
+        if(b) b.classList.remove('on');
+      });
+    });
+    // liga o clicado se estava desligado
+    if(!ativo){
+      svg.classList.add('show-'+tipo);
+      var btn = document.getElementById(btnId);
+      if(btn) btn.classList.add('on');
     }
   };
 
